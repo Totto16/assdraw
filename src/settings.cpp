@@ -135,10 +135,11 @@ void ASSDrawSettingsDialog::OnSettingsApplyButtonClicked(wxCommandEvent &event)
 	//wxPropertyGrid *propgrid = (wxPropertyGrid *) button->GetClientData();
 	if (propgrid == NULL) return;
 
-	#define PARSECOLOR(color, pgid) \
+	#define PARSECOLOR(ptr, pgid) \
 	{ \
-		wxVariant variant = propgrid->GetPropertyValue(pgid); \
-		color = *wxGetVariantCast(variant,wxColour); \
+		wxAny any = propgrid->GetPropertyValue(pgid); \
+		assert(any.CheckType<wxColour>()); \
+		ptr = any.As<wxColour>(); \
 	}
 
 	#define PARSE(ptr, pgid) propgrid->GetPropertyValue(pgid).Convert(ptr);
