@@ -42,8 +42,7 @@ DEFINE_EVENT_TYPE(wxEVT_SETTINGS_CHANGED)
 // ASSDrawSettingsDialog
 // ----------------------------------------------------------------------------
 
-ASSDrawSettingsDialog::ASSDrawSettingsDialog(wxWindow *parent, ASSDrawFrame *frame, int id)
- : wxPanel(parent, id)
+ASSDrawSettingsDialog::ASSDrawSettingsDialog(wxWindow *parent, ASSDrawFrame *frame, int id) : wxPanel(parent, id)
 {
 	m_frame = frame;
 	propgrid = NULL;
@@ -51,30 +50,18 @@ ASSDrawSettingsDialog::ASSDrawSettingsDialog(wxWindow *parent, ASSDrawFrame *fra
 
 void ASSDrawSettingsDialog::Init()
 {
-    propgrid = new wxPropertyGrid(this,
-		wxID_ANY,
-		wxDefaultPosition,
-		wxDefaultSize,
-		//wxPG_BOLD_MODIFIED |
-		//wxPG_SPLITTER_AUTO_CENTER |
-		//wxPG_AUTO_SORT |
-		//wxPG_HIDE_MARGIN | wxPG_STATIC_SPLITTER |
-		wxPG_TOOLTIPS |
-		//wxPG_NOCATEGORIES |
-		wxTAB_TRAVERSAL //|
-		//wxSUNKEN_BORDER
-	);
+	propgrid = new wxPropertyGrid(this, wxID_ANY, __DPDS__ , wxPG_TOOLTIPS | wxTAB_TRAVERSAL);
 
-    #define APPENDCOLOURPROP(pgid, label, color) pgid = propgrid->Append(new wxColourProperty(label, wxPG_LABEL, color));
-    #define APPENDUINTPROP(pgid, label, uint) \
-		pgid = propgrid->Append(new wxUIntProperty(label, wxPG_LABEL, uint) ); \
-		propgrid->SetPropertyValidator( pgid, validator );
-    #define APPENDBOOLPROP(pgid, label, boolvar) \
-	    pgid = propgrid->Append(new wxBoolProperty (label, wxPG_LABEL, boolvar ) ); \
-    	propgrid->SetPropertyAttribute( pgid, wxPG_BOOL_USE_CHECKBOX, (long)1 );
+	#define APPENDCOLOURPROP(pgid, label, color) pgid = propgrid->Append(new wxColourProperty(label, wxPG_LABEL, color));
+	#define APPENDUINTPROP(pgid, label, uint) \
+		pgid = propgrid->Append(new wxUIntProperty(label, wxPG_LABEL, uint)); \
+		propgrid->SetPropertyValidator(pgid, validator);
+	#define APPENDBOOLPROP(pgid, label, boolvar) \
+		pgid = propgrid->Append(new wxBoolProperty(label, wxPG_LABEL, boolvar)); \
+		propgrid->SetPropertyAttribute(pgid, wxPG_BOOL_USE_CHECKBOX, (long) 1);
 	wxLongPropertyValidator validator(0x0,0xFF);
 
-    propgrid->Append(new wxPropertyCategory(_T("Appearance"),wxPG_LABEL) );
+	propgrid->Append(new wxPropertyCategory(_T("Appearance"), wxPG_LABEL));
 	APPENDCOLOURPROP(colors_canvas_bg_pgid, _T("Canvas"), m_frame->colors.canvas_bg)
 	APPENDCOLOURPROP(colors_canvas_shape_normal_pgid, _T("Drawing"), m_frame->colors.canvas_shape_normal)
 	APPENDUINTPROP(alphas_canvas_shape_normal_pgid, _T("Drawing @"), m_frame->alphas.canvas_shape_normal)
@@ -97,9 +84,10 @@ void ASSDrawSettingsDialog::Init()
 	APPENDCOLOURPROP(colors_ruler_h_pgid, _T("H ruler"), m_frame->colors.ruler_h)
 	APPENDCOLOURPROP(colors_ruler_v_pgid, _T("V ruler"), m_frame->colors.ruler_v)
 
-    propgrid->Append(new wxPropertyCategory(_T("Behaviors"),wxPG_LABEL) );
+	propgrid->Append(new wxPropertyCategory(_T("Behaviors"), wxPG_LABEL));
 	APPENDBOOLPROP(behaviors_capitalizecmds_pgid, _T("Capitalize commands"), m_frame->behaviors.capitalizecmds);
 	APPENDBOOLPROP(behaviors_autoaskimgopac_pgid, _T("Ask for image opacity"), m_frame->behaviors.autoaskimgopac);
+	APPENDUINTPROP(alphas_dfltimgopac_pgid, _T("Default image opacity"), m_frame->alphas.dfltimgopac)
 	APPENDBOOLPROP(behaviors_parse_spc_pgid, _T("Parse S/P/C"), m_frame->behaviors.parse_spc);
 	APPENDBOOLPROP(behaviors_nosplashscreen_pgid, _T("No splash screen"), m_frame->behaviors.nosplashscreen);
 	APPENDBOOLPROP(behaviors_confirmquit_pgid, _T("Confirm quit"), m_frame->behaviors.confirmquit);
@@ -125,15 +113,16 @@ void ASSDrawSettingsDialog::Init()
 
 ASSDrawSettingsDialog::~ASSDrawSettingsDialog()
 {
-	if (propgrid) propgrid->Clear();
+	if (propgrid)
+		propgrid->Clear();
 }
 
 void ASSDrawSettingsDialog::OnSettingsApplyButtonClicked(wxCommandEvent &event)
 {
-
 	wxButton *button = (wxButton *) event.GetEventObject();
-	//wxPropertyGrid *propgrid = (wxPropertyGrid *) button->GetClientData();
-	if (propgrid == NULL) return;
+
+	if (propgrid == NULL)
+		return;
 
 	#define PARSECOLOR(ptr, pgid) \
 	{ \
@@ -141,16 +130,15 @@ void ASSDrawSettingsDialog::OnSettingsApplyButtonClicked(wxCommandEvent &event)
 		assert(any.CheckType<wxColour>()); \
 		ptr = any.As<wxColour>(); \
 	}
-
 	#define PARSE(ptr, pgid) propgrid->GetPropertyValue(pgid).Convert(ptr);
 
 	PARSECOLOR(m_frame->colors.canvas_bg, colors_canvas_bg_pgid)
-	PARSECOLOR(m_frame->colors.canvas_shape_controlpoint, colors_canvas_shape_controlpoint_pgid)
+	PARSECOLOR(m_frame->colors.canvas_shape_normal, colors_canvas_shape_normal_pgid)
+	PARSECOLOR(m_frame->colors.canvas_shape_preview, colors_canvas_shape_preview_pgid)
+	PARSECOLOR(m_frame->colors.canvas_shape_outline, colors_canvas_shape_outline_pgid)
 	PARSECOLOR(m_frame->colors.canvas_shape_guideline, colors_canvas_shape_guideline_pgid)
 	PARSECOLOR(m_frame->colors.canvas_shape_mainpoint, colors_canvas_shape_mainpoint_pgid)
-	PARSECOLOR(m_frame->colors.canvas_shape_normal, colors_canvas_shape_normal_pgid)
-	PARSECOLOR(m_frame->colors.canvas_shape_outline, colors_canvas_shape_outline_pgid)
-	PARSECOLOR(m_frame->colors.canvas_shape_preview, colors_canvas_shape_preview_pgid)
+	PARSECOLOR(m_frame->colors.canvas_shape_controlpoint, colors_canvas_shape_controlpoint_pgid)
 	PARSECOLOR(m_frame->colors.canvas_shape_selectpoint, colors_canvas_shape_selectpoint_pgid)
 	PARSECOLOR(m_frame->colors.library_libarea, colors_library_libarea_pgid)
 	PARSECOLOR(m_frame->colors.library_shape, colors_library_shape_pgid)
@@ -158,13 +146,14 @@ void ASSDrawSettingsDialog::OnSettingsApplyButtonClicked(wxCommandEvent &event)
 	PARSECOLOR(m_frame->colors.ruler_h, colors_ruler_h_pgid)
 	PARSECOLOR(m_frame->colors.ruler_v, colors_ruler_v_pgid)
 
-	PARSE(&m_frame->alphas.canvas_shape_controlpoint, alphas_canvas_shape_controlpoint_pgid)
+	PARSE(&m_frame->alphas.canvas_shape_normal, alphas_canvas_shape_normal_pgid)
+	PARSE(&m_frame->alphas.canvas_shape_preview, alphas_canvas_shape_preview_pgid)
+	PARSE(&m_frame->alphas.canvas_shape_outline, alphas_canvas_shape_outline_pgid)
 	PARSE(&m_frame->alphas.canvas_shape_guideline, alphas_canvas_shape_guideline_pgid)
 	PARSE(&m_frame->alphas.canvas_shape_mainpoint, alphas_canvas_shape_mainpoint_pgid)
-	PARSE(&m_frame->alphas.canvas_shape_normal, alphas_canvas_shape_normal_pgid)
-	PARSE(&m_frame->alphas.canvas_shape_outline, alphas_canvas_shape_outline_pgid)
-	PARSE(&m_frame->alphas.canvas_shape_preview, alphas_canvas_shape_preview_pgid)
+	PARSE(&m_frame->alphas.canvas_shape_controlpoint, alphas_canvas_shape_controlpoint_pgid)
 	PARSE(&m_frame->alphas.canvas_shape_selectpoint, alphas_canvas_shape_selectpoint_pgid)
+	PARSE(&m_frame->alphas.dfltimgopac, alphas_dfltimgopac_pgid)
 
 	PARSE(&m_frame->sizes.origincross, sizes_origincross_pgid)
 
@@ -174,10 +163,9 @@ void ASSDrawSettingsDialog::OnSettingsApplyButtonClicked(wxCommandEvent &event)
 	PARSE(&m_frame->behaviors.nosplashscreen, behaviors_nosplashscreen_pgid)
 	PARSE(&m_frame->behaviors.confirmquit, behaviors_confirmquit_pgid)
 
-	wxCommandEvent evento( wxEVT_SETTINGS_CHANGED, event.GetId() );
-    evento.SetEventObject( button );
-    m_frame->GetEventHandler()->ProcessEvent( evento );
-
+	wxCommandEvent evento(wxEVT_SETTINGS_CHANGED, event.GetId());
+	evento.SetEventObject(button);
+	m_frame->GetEventHandler()->ProcessEvent(evento);
 }
 
 void ASSDrawSettingsDialog::OnSettingsRevertButtonClicked(wxCommandEvent &event)
@@ -192,12 +180,12 @@ void ASSDrawSettingsDialog::RefreshSettingsDisplay()
 	#define UPDATESETTING(value, pgid) propgrid->SetPropertyValue(pgid, value);
 
 	UPDATESETTING(m_frame->colors.canvas_bg, colors_canvas_bg_pgid)
-	UPDATESETTING(m_frame->colors.canvas_shape_controlpoint, colors_canvas_shape_controlpoint_pgid)
+	UPDATESETTING(m_frame->colors.canvas_shape_normal, colors_canvas_shape_normal_pgid)
+	UPDATESETTING(m_frame->colors.canvas_shape_preview, colors_canvas_shape_preview_pgid)
+	UPDATESETTING(m_frame->colors.canvas_shape_outline, colors_canvas_shape_outline_pgid)
 	UPDATESETTING(m_frame->colors.canvas_shape_guideline, colors_canvas_shape_guideline_pgid)
 	UPDATESETTING(m_frame->colors.canvas_shape_mainpoint, colors_canvas_shape_mainpoint_pgid)
-	UPDATESETTING(m_frame->colors.canvas_shape_normal, colors_canvas_shape_normal_pgid)
-	UPDATESETTING(m_frame->colors.canvas_shape_outline, colors_canvas_shape_outline_pgid)
-	UPDATESETTING(m_frame->colors.canvas_shape_preview, colors_canvas_shape_preview_pgid)
+	UPDATESETTING(m_frame->colors.canvas_shape_controlpoint, colors_canvas_shape_controlpoint_pgid)
 	UPDATESETTING(m_frame->colors.canvas_shape_selectpoint, colors_canvas_shape_selectpoint_pgid)
 	UPDATESETTING(m_frame->colors.library_libarea, colors_library_libarea_pgid)
 	UPDATESETTING(m_frame->colors.library_shape, colors_library_shape_pgid)
@@ -205,13 +193,14 @@ void ASSDrawSettingsDialog::RefreshSettingsDisplay()
 	UPDATESETTING(m_frame->colors.ruler_h, colors_ruler_h_pgid)
 	UPDATESETTING(m_frame->colors.ruler_v, colors_ruler_v_pgid)
 
-	UPDATESETTING(m_frame->alphas.canvas_shape_controlpoint, alphas_canvas_shape_controlpoint_pgid)
+	UPDATESETTING(m_frame->alphas.canvas_shape_normal, alphas_canvas_shape_normal_pgid)
+	UPDATESETTING(m_frame->alphas.canvas_shape_preview, alphas_canvas_shape_preview_pgid)
+	UPDATESETTING(m_frame->alphas.canvas_shape_outline, alphas_canvas_shape_outline_pgid)
 	UPDATESETTING(m_frame->alphas.canvas_shape_guideline, alphas_canvas_shape_guideline_pgid)
 	UPDATESETTING(m_frame->alphas.canvas_shape_mainpoint, alphas_canvas_shape_mainpoint_pgid)
-	UPDATESETTING(m_frame->alphas.canvas_shape_normal, alphas_canvas_shape_normal_pgid)
-	UPDATESETTING(m_frame->alphas.canvas_shape_outline, alphas_canvas_shape_outline_pgid)
-	UPDATESETTING(m_frame->alphas.canvas_shape_preview, alphas_canvas_shape_preview_pgid)
+	UPDATESETTING(m_frame->alphas.canvas_shape_controlpoint, alphas_canvas_shape_controlpoint_pgid)
 	UPDATESETTING(m_frame->alphas.canvas_shape_selectpoint, alphas_canvas_shape_selectpoint_pgid)
+	UPDATESETTING(m_frame->alphas.dfltimgopac, alphas_dfltimgopac_pgid)
 
 	UPDATESETTING(m_frame->sizes.origincross, sizes_origincross_pgid)
 
@@ -220,5 +209,4 @@ void ASSDrawSettingsDialog::RefreshSettingsDisplay()
 	UPDATESETTING(m_frame->behaviors.parse_spc, behaviors_parse_spc_pgid)
 	UPDATESETTING(m_frame->behaviors.nosplashscreen, behaviors_nosplashscreen_pgid)
 	UPDATESETTING(m_frame->behaviors.confirmquit, behaviors_confirmquit_pgid)
-
 }

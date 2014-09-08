@@ -25,7 +25,6 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 #include "assdraw.hpp"
 
 void ASSDrawFrame::InitializeDefaultSettings()
@@ -38,8 +37,8 @@ void ASSDrawFrame::InitializeDefaultSettings()
 	colors.canvas_shape_mainpoint = wxColour(0xFF, 0x0, 0x0, 0xCC);
 	colors.canvas_shape_controlpoint = wxColour(0x0, 0xFF, 0x0, 0xCC);
 	colors.canvas_shape_selectpoint = wxColour(0x0, 0x0, 0xCC);
-	colors.library_shape = wxColour(0x0, 0x66, 0x99);
 	colors.library_libarea = wxColour(0xFF, 0xFF, 0x99);
+	colors.library_shape = wxColour(0x0, 0x66, 0x99);
 	colors.origin = wxColour(0xFF, 0x0, 0x0);
 	colors.ruler_h = wxColour(0x0, 0x0, 0x66);
 	colors.ruler_v = wxColour(0x66, 0x0, 0x0);
@@ -51,11 +50,12 @@ void ASSDrawFrame::InitializeDefaultSettings()
 	alphas.canvas_shape_mainpoint = 128;
 	alphas.canvas_shape_controlpoint = 128;
 	alphas.canvas_shape_selectpoint = 255;
+	alphas.dfltimgopac = 255;
 
 	sizes.origincross = 2;
 
 	behaviors.capitalizecmds = false;
-	behaviors.autoaskimgopac = true;
+	behaviors.autoaskimgopac = false;
 	behaviors.parse_spc = false;
 	behaviors.nosplashscreen = false;
 	behaviors.confirmquit = true;
@@ -90,7 +90,7 @@ void ASSDrawFrame::ApplySettings()
 	m_canvas->Refresh();
 
 	shapelib->libarea->SetBackgroundColour(colors.library_libarea);
-	typedef std::vector< ASSDrawShapePreview *> PrevVec;
+	typedef std::vector<ASSDrawShapePreview*> PrevVec;
 	PrevVec shapes = shapelib->GetShapePreviews();
 	int n = shapes.size();
 	for (int i = 0; i < n; i++)
@@ -126,6 +126,7 @@ void ASSDrawFrame::LoadSettings()
 	#define CFGREAD(var) config->Read(wxString(#var,wxConvUTF8), &var);
 	config->SetPath(_T("settings"));
 	wxString tmpstr;
+
 	CFGREADCOLOR(colors.canvas_bg)
 	CFGREADCOLOR(colors.canvas_shape_normal)
 	CFGREADCOLOR(colors.canvas_shape_preview)
@@ -139,6 +140,7 @@ void ASSDrawFrame::LoadSettings()
 	CFGREADCOLOR(colors.origin)
 	CFGREADCOLOR(colors.ruler_h)
 	CFGREADCOLOR(colors.ruler_v)
+
 	CFGREAD(alphas.canvas_shape_normal)
 	CFGREAD(alphas.canvas_shape_preview)
 	CFGREAD(alphas.canvas_shape_controlpoint)
@@ -146,12 +148,16 @@ void ASSDrawFrame::LoadSettings()
 	CFGREAD(alphas.canvas_shape_mainpoint)
 	CFGREAD(alphas.canvas_shape_outline)
 	CFGREAD(alphas.canvas_shape_selectpoint)
+	CFGREAD(alphas.dfltimgopac)
+
 	CFGREAD(sizes.origincross)
+
 	CFGREAD(behaviors.autoaskimgopac)
 	CFGREAD(behaviors.capitalizecmds)
 	CFGREAD(behaviors.parse_spc)
 	CFGREAD(behaviors.nosplashscreen)
 	CFGREAD(behaviors.confirmquit)
+
 	config->SetPath(_T(".."));
 }
 
@@ -160,6 +166,7 @@ void ASSDrawFrame::SaveSettings()
 	#define CFGWRITE(var) config->Write(wxString(#var,wxConvUTF8), var);
 	#define CFGWRITECOLOR(color) config->Write(wxString(#color,wxConvUTF8), color.GetAsString(wxC2S_CSS_SYNTAX));
 	config->SetPath(_T("settings"));
+
 	CFGWRITECOLOR(colors.canvas_bg)
 	CFGWRITECOLOR(colors.canvas_shape_normal)
 	CFGWRITECOLOR(colors.canvas_shape_preview)
@@ -173,6 +180,7 @@ void ASSDrawFrame::SaveSettings()
 	CFGWRITECOLOR(colors.origin)
 	CFGWRITECOLOR(colors.ruler_h)
 	CFGWRITECOLOR(colors.ruler_v)
+
 	CFGWRITE(alphas.canvas_shape_normal)
 	CFGWRITE(alphas.canvas_shape_preview)
 	CFGWRITE(alphas.canvas_shape_controlpoint)
@@ -180,11 +188,15 @@ void ASSDrawFrame::SaveSettings()
 	CFGWRITE(alphas.canvas_shape_mainpoint)
 	CFGWRITE(alphas.canvas_shape_outline)
 	CFGWRITE(alphas.canvas_shape_selectpoint)
+	CFGWRITE(alphas.dfltimgopac)
+
 	CFGWRITE(sizes.origincross)
+
 	CFGWRITE(behaviors.autoaskimgopac)
 	CFGWRITE(behaviors.capitalizecmds)
 	CFGWRITE(behaviors.parse_spc)
 	CFGWRITE(behaviors.nosplashscreen)
 	CFGWRITE(behaviors.confirmquit)
+
 	config->SetPath(_T(".."));
 }

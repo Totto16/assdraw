@@ -43,7 +43,7 @@ public:
 
 	ASSDrawFrame* m_frame;
 
-	ASSDrawSettingsDialog( wxWindow *parent, ASSDrawFrame *frame, int id = wxID_ANY );
+	ASSDrawSettingsDialog(wxWindow *parent, ASSDrawFrame *frame, int id = wxID_ANY);
 	virtual ~ASSDrawSettingsDialog();
 
 	virtual void Init();
@@ -59,11 +59,12 @@ public:
 	wxPGId colors_canvas_shape_mainpoint_pgid;
 	wxPGId colors_canvas_shape_controlpoint_pgid;
 	wxPGId colors_canvas_shape_selectpoint_pgid;
-	wxPGId colors_library_shape_pgid;
 	wxPGId colors_library_libarea_pgid;
+	wxPGId colors_library_shape_pgid;
 	wxPGId colors_origin_pgid;
 	wxPGId colors_ruler_h_pgid;
 	wxPGId colors_ruler_v_pgid;
+
 	wxPGId alphas_canvas_shape_normal_pgid;
 	wxPGId alphas_canvas_shape_preview_pgid;
 	wxPGId alphas_canvas_shape_outline_pgid;
@@ -71,7 +72,10 @@ public:
 	wxPGId alphas_canvas_shape_mainpoint_pgid;
 	wxPGId alphas_canvas_shape_controlpoint_pgid;
 	wxPGId alphas_canvas_shape_selectpoint_pgid;
+	wxPGId alphas_dfltimgopac_pgid;
+
 	wxPGId sizes_origincross_pgid;
+
 	wxPGId behaviors_capitalizecmds_pgid;
 	wxPGId behaviors_autoaskimgopac_pgid;
 	wxPGId behaviors_parse_spc_pgid;
@@ -79,43 +83,36 @@ public:
 	wxPGId behaviors_confirmquit_pgid;
 
 	wxPropertyGrid *propgrid;
-	//DECLARE_EVENT_TABLE()
-
 };
 
 class wxLongPropertyValidator : public wxValidator
 {
 public:
 
-    wxLongPropertyValidator( const int min, const int max )
-        : wxValidator()
-    {
-		m_min = min, m_max = max;
-    }
+	wxLongPropertyValidator(const int min, const int max) : wxValidator() { m_min = min, m_max = max; }
 
-    virtual wxObject* Clone() const
-    {
-        return new wxLongPropertyValidator( m_min, m_max );
-    }
+	virtual wxObject* Clone() const { return new wxLongPropertyValidator(m_min, m_max); }
 
-    virtual bool Validate(wxWindow* WXUNUSED(parent))
+	virtual bool Validate(wxWindow* WXUNUSED(parent))
 	{
-	    wxTextCtrl* tc = wxDynamicCast(GetWindow(), wxTextCtrl);
-	    wxCHECK_MSG(tc, true, wxT("validator window must be wxTextCtrl"));
+		wxTextCtrl* tc = wxDynamicCast(GetWindow(), wxTextCtrl);
+		wxCHECK_MSG(tc, true, wxT("validator window must be wxTextCtrl"));
 
-	    wxString val = tc->GetValue();
+		wxString val = tc->GetValue();
 
 		long valint = 0;
 		val.ToLong(&valint);
 
-		if (valint < m_min) valint = m_min;
-		if (valint > m_max) valint = m_max;
+		if (valint < m_min)
+			valint = m_min;
+		if (valint > m_max)
+			valint = m_max;
 
 		tc->SetValue(wxString::Format(_T("%d"), valint));
 
-	    return true;
+		return true;
 	}
 
 private:
-    int m_min, m_max;
+	int m_min, m_max;
 };

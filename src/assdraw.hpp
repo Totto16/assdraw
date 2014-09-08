@@ -53,26 +53,20 @@
 //#define BETAVERSION 2
 #define VERSION _T("3.0 final")
 
-// this header file declares the following classes
-class ASSDrawApp;
-class ASSDrawFrame;
-class ASSDrawCanvas;
-
 class ASSDrawApp : public wxApp 
 { 
 public:      
-    bool OnInit();
+	bool OnInit();
 };
 
 class ASSDrawFrame : public wxFrame
 {
 public:
-    // constructor
-    ASSDrawFrame(wxApp *app, const wxString& title, const wxPoint& pos, const wxSize& size = wxDefaultSize,
-            long style = wxDEFAULT_FRAME_STYLE);
-    virtual ~ASSDrawFrame();
+	// constructor
+	ASSDrawFrame(wxApp *app, const wxString& title, const wxPoint& pos, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
+	virtual ~ASSDrawFrame();
 
-    // event handlers (these functions should _not_ be virtual)
+	// event handlers (these functions should _not_ be virtual)
 	// OnSelect_* for single items, OnChoose_* for many-choose-one items
 	void OnSelect_Clear(wxCommandEvent& WXUNUSED(event)) { _Clear(); }
 	void OnSelect_Preview(wxCommandEvent& WXUNUSED(event)) { _Preview(); }
@@ -82,8 +76,8 @@ public:
 	void OnSelect_ResetPerspective(wxCommandEvent& WXUNUSED(event)) { _ResetPerspective(); }
 	void OnSelect_Help(wxCommandEvent& WXUNUSED(event)) { _Help(); }
 	void OnSelect_About(wxCommandEvent& WXUNUSED(event)) { _About(); }
-	void OnSelect_Undo(wxCommandEvent& WXUNUSED(event)) { UndoOrRedo( true ); }
-	void OnSelect_Redo(wxCommandEvent& WXUNUSED(event)) { UndoOrRedo( false ); }
+	void OnSelect_Undo(wxCommandEvent& WXUNUSED(event)) { UndoOrRedo(true); }
+	void OnSelect_Redo(wxCommandEvent& WXUNUSED(event)) { UndoOrRedo(false); }
 	void OnSelect_Paste(wxCommandEvent& WXUNUSED(event)) { _Paste(); }
 	void OnSelect_RemoveBG(wxCommandEvent& WXUNUSED(event)) { m_canvas->RemoveBackgroundImage(); }
 	void OnSelect_AlphaBG(wxCommandEvent& WXUNUSED(event)) { m_canvas->AskUserForBackgroundAlpha(); }
@@ -103,21 +97,21 @@ public:
 	void UndoOrRedo(bool isundo);
 	void UpdateUndoRedoMenu();
 
-    void _Clear();
-    void _Preview();
-    void _Transform();
+	void _Clear();
+	void _Preview();
+	void _Transform();
 	void _ToggleLibrary();
 	void _ToggleSettings();
-    void _Help();
-    void _About(unsigned timeout = 0);
-    void _Paste();
-    void _ResetPerspective();
+	void _Help();
+	void _About(unsigned timeout = 0);
+	void _Paste();
+	void _ResetPerspective();
 
 	void UpdateFrameUI(unsigned level = 0);
 
-    // the canvas
-    wxApp *m_app;
-    ASSDrawCanvas* m_canvas;
+	// the canvas
+	wxApp *m_app;
+	ASSDrawCanvas* m_canvas;
 	wxAuiManager m_mgr;
 	wxString default_perspective;
 	ASSDrawSrcTxtCtrl* srctxtctrl;
@@ -125,31 +119,31 @@ public:
 	// config
 	wxString configfile;
 	wxFileConfig *config;
-	
-    // toolbars
-    wxToolBar *drawtbar, *modetbar, *bgimgtbar;
-	
+
+	// toolbars
+	wxToolBar *drawtbar, *modetbar, *bgimgtbar;
+
 	// zoom slider
 	wxSlider* zoomslider;
-	
+
 	//library
 	ASSDrawShapeLibrary *shapelib;
-	typedef std::vector< ASSDrawEngine* > DrawEngineVec;
+	typedef std::vector<ASSDrawEngine*> DrawEngineVec;
 	DrawEngineVec libshapes;
-	
+
 	// menus
 #if wxUSE_MENUS
-    wxMenu *drawMenu;
-    wxMenu *modeMenu;
-    wxMenu *bgimgMenu;
-    wxMenu *viewMenu;
-    wxMenu *tbarMenu;
+	wxMenu *drawMenu;
+	wxMenu *modeMenu;
+	wxMenu *bgimgMenu;
+	wxMenu *viewMenu;
+	wxMenu *tbarMenu;
 #endif
 
 	// dialogs
 	ASSDrawTransformDlg* transformdlg;	
 	ASSDrawSettingsDialog* settingsdlg;
-	
+
 	// colors
 	struct
 	{
@@ -163,7 +157,9 @@ public:
 		wxColour canvas_shape_selectpoint;
 		wxColour library_shape;
 		wxColour library_libarea;
-		wxColour origin, ruler_h, ruler_v;
+		wxColour origin;
+		wxColour ruler_h;
+		wxColour ruler_v;
 	} colors;
 
 	struct
@@ -175,13 +171,14 @@ public:
 		long canvas_shape_mainpoint;
 		long canvas_shape_controlpoint;
 		long canvas_shape_selectpoint;
+		long dfltimgopac;
 	} alphas;
 
 	struct
 	{
 		long origincross;
 	} sizes;
-	
+
 	struct
 	{
 		bool capitalizecmds;
@@ -190,7 +187,7 @@ public:
 		bool nosplashscreen;
 		bool confirmquit;
 	} behaviors;
-	
+
 	void LoadSettings();
 	void SaveSettings();
 	void InitializeDefaultSettings();
@@ -202,8 +199,8 @@ protected:
 	virtual void SetToolBars();
 	virtual void SetMenus();
 	virtual void SetPanes();
-	DECLARE_EVENT_TABLE()
-	
-	wxHelpController helpcontroller;
 
+	DECLARE_EVENT_TABLE()
+
+	wxHelpController helpcontroller;
 };
