@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\agg_bcspline.h" />
+    <ClInclude Include="src\agg_conv_bcspline.h" />
+    <ClInclude Include="src\agg_vcgen_bcspline.h" />
+    <ClInclude Include="src\wxAGG\AGGWindow.h" />
+    <ClInclude Include="src\wxAGG\PixelFormatConvertor.h" />
+    <ClInclude Include="src\_common.hpp" />
+    <ClInclude Include="src\agghelper.hpp" />
+    <ClInclude Include="src\assdraw.hpp" />
+    <ClInclude Include="src\canvas.hpp" />
+    <ClInclude Include="src\canvas_mouse.hpp" />
+    <ClInclude Include="src\cmd.hpp" />
+    <ClInclude Include="src\dlgctrl.hpp" />
+    <ClInclude Include="src\engine.hpp" />
+    <ClInclude Include="src\enums.hpp" />
+    <ClInclude Include="src\include_once.hpp" />
+    <ClInclude Include="src\library.hpp" />
+    <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\settings.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\agg_bcspline.cpp" />
+    <ClCompile Include="src\agg_vcgen_bcspline.cpp" />
+    <ClCompile Include="src\wxAGG\AGGWindow.cpp" />
+    <ClCompile Include="src\assdraw.cpp" />
+    <ClCompile Include="src\assdraw_settings.cpp" />
+    <ClCompile Include="src\canvas.cpp" />
+    <ClCompile Include="src\canvas_mouse.cpp" />
+    <ClCompile Include="src\cmd.cpp" />
+    <ClCompile Include="src\dlgctrl.cpp" />
+    <ClCompile Include="src\engine.cpp" />
+    <ClCompile Include="src\library.cpp" />
+    <ClCompile Include="src\settings.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\assdraw.rc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3BC75951-691C-4703-A29A-D29E298248AC}</ProjectGuid>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>assdraw</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;__WXMSW__;_WINDOWS;_DEBUG;__WXDEBUG__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\src\wxWidgets-3.0.1\include;C:\src\wxWidgets-3.0.1\include\msvc;C:\src\agg-2.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>wxbase30ud.lib;wxmsw30ud_aui.lib;wxmsw30ud_core.lib;wxmsw30ud_gl.lib;wxmsw30ud_propgrid.lib;wxmsw30ud_stc.lib;agg25d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\src\wxWidgets-3.0.1\lib\vc_lib;C:\src\agg-2.5\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;__WXMSW__;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\src\wxWidgets-3.0.1\include;C:\src\wxWidgets-3.0.1\include\msvc;C:\src\agg-2.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>wxbase30u.lib;wxmsw30u_aui.lib;wxmsw30u_core.lib;wxmsw30u_gl.lib;wxmsw30u_propgrid.lib;wxmsw30u_stc.lib;agg25.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\src\wxWidgets-3.0.1\lib\vc_lib;C:\src\agg-2.5\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
