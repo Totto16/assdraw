@@ -57,9 +57,9 @@
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "wsock32.lib")
 #ifdef __WXDEBUG__
-#pragma comment(lib, "wxmsw28ud_propgrid.lib")
+#pragma comment(lib, "wxmsw30ud_propgrid.lib")
 #else
-#pragma comment(lib, "wxmsw28u_propgrid.lib")
+#pragma comment(lib, "wxmsw30u_propgrid.lib")
 #endif
 #endif
 
