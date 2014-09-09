@@ -1,102 +1,44 @@
-// Microsoft Visual C++ generated resource script.
-//
-#include "resource.h"
+// note that the icon used by the Explorer (i.e. the programs icon) is the first icon in the executable and the icons are sorted both by their order
+// (Win9x) and by alphabetically (!) (NT), so put this icon first and give it a name starting with "a"
+//aaaaaaaa                ICON                    "tsukasa.ico"
 
-#define APSTUDIO_READONLY_SYMBOLS
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 2 resource.
-//
-//#include "afxres.h"
-#include "WinResrc.h"
+// this icon is used with wxFrame::SetIcon()
+appico                  ICON                    "tsukasa.ico"
 
-/////////////////////////////////////////////////////////////////////////////
-#undef APSTUDIO_READONLY_SYMBOLS
+// set this to 1 if you don't want to use manifest resource (manifest resource is needed to enable visual styles on Windows XP - see docs/msw/winxp.txt for more information)
+#define wxUSE_NO_MANIFEST 0
 
-/////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// this is not always needed but doesn't hurt (except making the executable very slightly larger): this file contains the standard icons, cursors, ...
+//#include "wx/msw/wx.rc"
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
-#endif //_WIN32
+// used by ./src/dlgctrl.cpp->ASSDrawAboutDlg::ASSDrawAboutDlg
+assdraw3_               BITMAP                  "bitmaps/assdraw3.bmp"
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
+// used by ./src/assdraw.cpp->ASSDrawFrame::SetToolBars
+new_                    BITMAP                  "bitmaps/new_.bmp"
+//src_                    BITMAP                  "bitmaps/src_.bmp"
+preview_                BITMAP                  "bitmaps/preview_.bmp"
+//rot_                    BITMAP                  "bitmaps/rot_.bmp"
+arr_                    BITMAP                  "bitmaps/arr_.bmp"
+m_                      BITMAP                  "bitmaps/m_.bmp"
+//n_                      BITMAP                  "bitmaps/n_.bmp"
+l_                      BITMAP                  "bitmaps/l_.bmp"
+b_                      BITMAP                  "bitmaps/b_.bmp"
+//s_                      BITMAP                  "bitmaps/s_.bmp"
+//p_                      BITMAP                  "bitmaps/p_.bmp"
+//c_                      BITMAP                  "bitmaps/c_.bmp"
+del_                    BITMAP                  "bitmaps/del_.bmp"
+sc_rot_                 BITMAP                  "bitmaps/sc_rot_.bmp"
+nut_                    BITMAP                  "bitmaps/nut_.bmp"
+pan_shp                 BITMAP                  "bitmaps/pan_shp.bmp"
+pan_bg                  BITMAP                  "bitmaps/pan_bg.bmp"
+//pan_both                BITMAP                  "bitmaps/pan_both.bmp"
 
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-APPICO                  ICON                    "tsukasa.ico"
+// used by ./src/dlgctrl.cpp->ASSDrawTransformDlg::ASSDrawTransformDlg
+transform               BITMAP                  "bitmaps/transform.bmp"
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-ASSDRAW3_               BITMAP                  "bitmaps/assdraw3.bmp"
-NEW_                    BITMAP                  "bitmaps/new_.bmp"
-SRC_                    BITMAP                  "bitmaps/src_.bmp"
-PREVIEW_                BITMAP                  "bitmaps/preview_.bmp"
-ARR_                    BITMAP                  "bitmaps/arr_.bmp"
-M_                      BITMAP                  "bitmaps/m_.bmp"
-N_                      BITMAP                  "bitmaps/n_.bmp"
-L_                      BITMAP                  "bitmaps/l_.bmp"
-B_                      BITMAP                  "bitmaps/b_.bmp"
-S_                      BITMAP                  "bitmaps/s_.bmp"
-P_                      BITMAP                  "bitmaps/p_.bmp"
-C_                      BITMAP                  "bitmaps/c_.bmp"
-DEL_                    BITMAP                  "bitmaps/del_.bmp"
-NUT_                    BITMAP                  "bitmaps/nut_.bmp"
-SC_ROT_                 BITMAP                  "bitmaps/sc_rot_.bmp"
-ROT_                    BITMAP                  "bitmaps/rot_.bmp"
-HELP_                   BITMAP                  "bitmaps/help_.bmp"
-TRANSFORM               BITMAP                  "bitmaps/transform.bmp"
-PAN_SHP                 BITMAP                  "bitmaps/pan_shp.bmp"
-PAN_BG                  BITMAP                  "bitmaps/pan_bg.bmp"
-//PAN_BOTH                BITMAP                  "bitmaps/pan_both.bmp"
-ADD                     BITMAP                  "bitmaps/add_.bmp"
-CHECK                   BITMAP                  "bitmaps/check_.bmp"
-UNCHECK                 BITMAP                  "bitmaps/uncheck_.bmp"
-DELCROSS                BITMAP                  "bitmaps/del_cross.bmp"
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE 
-BEGIN
-    "resource.h\0"
-END
-
-3 TEXTINCLUDE 
-BEGIN
-    "\r\n"
-END
-
-2 TEXTINCLUDE 
-BEGIN
-    "#include ""afxres.h""\r\n"
-END
-
-#endif    // APSTUDIO_INVOKED
-
-#endif    // English (U.S.) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-
-#ifndef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 3 resource.
-//
-
-
-/////////////////////////////////////////////////////////////////////////////
-#endif    // not APSTUDIO_INVOKED
-
+// used by ./src/library.cpp->ASSDrawShapeLibrary::ASSDrawShapeLibrary
+add                     BITMAP                  "bitmaps/add_.bmp"
+check                   BITMAP                  "bitmaps/check_.bmp"
+uncheck                 BITMAP                  "bitmaps/uncheck_.bmp"
+delcross                BITMAP                  "bitmaps/del_cross.bmp"
