@@ -84,10 +84,11 @@ class ASSDrawAboutDlg : public wxDialog
 public:
 	ASSDrawAboutDlg(ASSDrawFrame *parent, unsigned timeout = 0);
 	virtual ~ASSDrawAboutDlg();
-	virtual void OnURL(wxHtmlLinkEvent &event);
-	virtual int ShowModal();
-	virtual void OnTimeout(wxTimerEvent& event);
-	virtual void OnMouseEnterWindow(wxMouseEvent& event);
+
+	int ShowModal();
+	void OnURL(wxHtmlLinkEvent& event);
+	void OnTimeout(wxTimerEvent& WXUNUSED(event));
+	void OnMouseEnterWindow(wxMouseEvent& WXUNUSED(event));
 
 protected:
 	wxTimer timer;
@@ -100,16 +101,17 @@ class BigStaticBitmapCtrl : public wxPanel
 public:
 	BigStaticBitmapCtrl(wxWindow *parent, wxBitmap bmap, wxColour bgcol, wxWindow *todrag = NULL);
 	virtual ~BigStaticBitmapCtrl();
-	virtual void OnPaint(wxPaintEvent& event);
-	virtual void OnMouseLeftDown(wxMouseEvent &event);
-	virtual void OnMouseLeftUp(wxMouseEvent &event);
-	virtual void OnMouseMove(wxMouseEvent &event);
+
+	void OnPaint(wxPaintEvent& WXUNUSED(event));
+	void OnMouseLeftDown(wxMouseEvent& event);
+	void OnMouseLeftUp(wxMouseEvent& WXUNUSED(event));
+	void OnMouseMove(wxMouseEvent& event);
 
 protected:
 	wxBitmap bitmap;
 	wxBrush bgbrush;
 	wxWindow *window_to_drag;
-	wxPoint dragpoint, wndpos;
+	wxPoint delta;
 
 	DECLARE_EVENT_TABLE()
 };

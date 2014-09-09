@@ -260,20 +260,17 @@ Control points for Bezier curves are generated once you release the mouse button
 	);
 	htmlwin->Connect(wxEVT_COMMAND_HTML_LINK_CLICKED, wxHtmlLinkEventHandler(ASSDrawAboutDlg::OnURL), NULL, this);
 
-	wxFlexGridSizer *sizer = new wxFlexGridSizer(1);
-	sizer->AddGrowableCol(0);
-	//sizer->AddGrowableRow(1);
+	wxStaticText *versiontext = new wxStaticText(this, wxID_ANY, wxString::Format(_T("Version: %s"), VERSION), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE);
+	versiontext->SetForegroundColour(*wxBLACK);
 
-	sizer->Add(new BigStaticBitmapCtrl(this, wxBITMAP(assdraw3_), *wxWHITE, this), 1, wxEXPAND);
-	sizer->Add(htmlwin, 1, wxLEFT | wxRIGHT, 2);
-	sizer->Add(new wxStaticText(this, wxID_ANY, wxString::Format(_T("Version: %s"), VERSION)), 1, wxEXPAND | wxALL, 2);
-	sizer->Add(new wxButton(this, wxID_OK), 0, wxALIGN_CENTER | wxBOTTOM, 10);
-	SetSizer(sizer);
-	sizer->Layout();
-	sizer->Fit(this);
+	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	sizer->Add(new BigStaticBitmapCtrl(this, wxBITMAP(assdraw3_), *wxWHITE, this), 0);
+	sizer->Add(htmlwin, 0, wxLEFT | wxRIGHT, 2);
+	sizer->Add(versiontext, 0, wxALL, 3);
+	sizer->Add(new wxButton(this, wxID_OK), 0, wxALIGN_CENTRE_HORIZONTAL| wxBOTTOM | wxALL, 10);
+	SetSizerAndFit(sizer);
 
 	Center();
-	//if (CanSetTransparent()) SetTransparent(0xCC);
 
 	timer.SetOwner(this);
 	Connect(wxEVT_TIMER, wxTimerEventHandler(ASSDrawAboutDlg::OnTimeout));
@@ -309,25 +306,36 @@ void ASSDrawAboutDlg::OnTimeout(wxTimerEvent& event)
 
 void ASSDrawAboutDlg::OnMouseEnterWindow(wxMouseEvent& event)
 {
-	// if mouse enters this dialog, stop the timout timer
-	// and dialog will only close through user input
+	// if mouse enters this dialog, stop the timout timer and dialog will only close through user input
 	timer.Stop();
 }
 
+// ----------------------------------------------------------------------------
+// BigStaticBitmapCtrl
+// ----------------------------------------------------------------------------
+
 BEGIN_EVENT_TABLE(BigStaticBitmapCtrl, wxPanel)
 	EVT_PAINT(BigStaticBitmapCtrl::OnPaint)
-    EVT_MOTION (BigStaticBitmapCtrl::OnMouseMove)
-    EVT_LEFT_UP(BigStaticBitmapCtrl::OnMouseLeftUp)
-    EVT_LEFT_DOWN(BigStaticBitmapCtrl::OnMouseLeftDown)
 END_EVENT_TABLE()
 
-BigStaticBitmapCtrl::BigStaticBitmapCtrl(wxWindow *parent, wxBitmap bmap, wxColour bgcol, wxWindow *todrag)
-	: wxPanel(parent, wxID_ANY)
+BigStaticBitmapCtrl::BigStaticBitmapCtrl(wxWindow *parent, wxBitmap bmap, wxColour bgcol, wxWindow *todrag) : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE)
 {
 	bitmap = bmap;
 	bgbrush = wxBrush(bgcol);
 	window_to_drag = todrag;
-	SetSize(bitmap.GetWidth(), bitmap.GetHeight());
+
+	if (window_to_drag != NULL)
+	{
+		Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(BigStaticBitmapCtrl::OnMouseLeftDown), NULL, this);
+		Connect(wxEVT_LEFT_UP, wxMouseEventHandler(BigStaticBitmapCtrl::OnMouseLeftUp), NULL, this);
+		Connect(wxEVT_MOTION, wxMouseEventHandler(BigStaticBitmapCtrl::OnMouseMove), NULL, this);
+	}
+
+	wxSize size(bitmap.GetWidth(), bitmap.GetHeight());
+	SetMaxSize(size);
+	SetMinSize(size);
+	SetSize(size);
+
 	Refresh();
 }
 
@@ -335,7 +343,7 @@ BigStaticBitmapCtrl::~BigStaticBitmapCtrl()
 {
 }
 
-void BigStaticBitmapCtrl::OnPaint(wxPaintEvent& event)
+void BigStaticBitmapCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
     wxPaintDC dc(this);
 	dc.SetBackground(bgbrush);
@@ -343,33 +351,28 @@ void BigStaticBitmapCtrl::OnPaint(wxPaintEvent& event)
     dc.DrawBitmap(bitmap, wxPoint(0,0));
 }
 
-void BigStaticBitmapCtrl::OnMouseLeftDown(wxMouseEvent &event)
+void BigStaticBitmapCtrl::OnMouseLeftDown(wxMouseEvent& event)
 {
-	if (window_to_drag != NULL)
-	{
-		dragpoint = event.GetPosition();
-	}
 	CaptureMouse();
+	wxPoint pos = window_to_drag->ClientToScreen(event.GetPosition());
+	wxPoint origin = window_to_drag->GetPosition();
+	int dx =  pos.x - origin.x;
+	int dy = pos.y - origin.y;
+	delta = wxPoint(dx, dy);
 }
 
-void BigStaticBitmapCtrl::OnMouseLeftUp(wxMouseEvent &event)
+void BigStaticBitmapCtrl::OnMouseLeftUp(wxMouseEvent& WXUNUSED(event))
 {
-	ReleaseMouse();
+	if (HasCapture())
+		ReleaseMouse();
 }
 
-void BigStaticBitmapCtrl::OnMouseMove(wxMouseEvent &event)
+void BigStaticBitmapCtrl::OnMouseMove(wxMouseEvent& event)
 {
-	if (window_to_drag != NULL && event.Dragging() && HasCapture())
+	if (event.Dragging() && HasCapture())
 	{
-		wxPoint npoint(event.GetPosition());
-		wxPoint wndpos = window_to_drag->GetScreenPosition();
-		wxPoint thispos = this->GetScreenPosition();
-		//ReleaseMouse();
-		window_to_drag->Move(wndpos.x + npoint.x - dragpoint.x,
-							 wndpos.y + npoint.y - dragpoint.y);
-		//CaptureMouse();
-		if (thispos == this->GetScreenPosition()) // if this ctrl did not move when window_to_drag moved
-			dragpoint = npoint;
+		wxPoint pt = event.GetPosition();
+		wxPoint pos = window_to_drag->ClientToScreen(pt);
+		window_to_drag->Move(wxPoint(pos.x - delta.x, pos.y - delta.y));
 	}
-	event.Skip(true);
 }
