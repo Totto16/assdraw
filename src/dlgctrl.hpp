@@ -31,15 +31,15 @@
 #include <wx/html/htmlwin.h>
 #include <wx/timer.h>
 
-
 class ASSDrawFrame;
 
 class ASSDrawSrcTxtCtrl : public wxTextCtrl
 {
 public:
 	ASSDrawSrcTxtCtrl(wxWindow *parent, ASSDrawFrame *frame);
-	virtual void CustomOnChar(wxKeyEvent &event);
-	virtual void CustomOnText(wxCommandEvent &event);
+
+	void CustomOnChar(wxKeyEvent &event);
+	void CustomOnText(wxCommandEvent &event);
 
 protected:
 	ASSDrawFrame *m_frame;
@@ -53,9 +53,9 @@ struct EightDouble
 
 class ASSDrawTransformDlg : public wxDialog
 {
-
 public:
 	ASSDrawTransformDlg(ASSDrawFrame* parent);
+
 	void OnTemplatesCombo(wxCommandEvent &event);
 	void EndModal(int retCode);
 
@@ -76,7 +76,6 @@ public:
 	static EightDouble combo_templatesValues[];
 
 	DECLARE_EVENT_TABLE()
-
 };
 
 class ASSDrawAboutDlg : public wxDialog

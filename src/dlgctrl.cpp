@@ -39,15 +39,6 @@
 #include "xpm/res.h"
 #endif
 
-BEGIN_EVENT_TABLE(ASSDrawSrcTxtCtrl, wxTextCtrl)
-	EVT_CHAR(ASSDrawSrcTxtCtrl::CustomOnChar)
-	EVT_TEXT(wxID_ANY, ASSDrawSrcTxtCtrl::CustomOnText)
-END_EVENT_TABLE()
-
-BEGIN_EVENT_TABLE(ASSDrawTransformDlg, wxDialog)
-	EVT_COMBOBOX(-1, ASSDrawTransformDlg::OnTemplatesCombo)
-END_EVENT_TABLE()
-
 //BEGIN_EVENT_TABLE(ASSDrawCanvasRecenterButton, wxWindow)
 //END_EVENT_TABLE()
 
@@ -55,8 +46,12 @@ END_EVENT_TABLE()
 // ASSDrawSrcTxtCtrl
 // ----------------------------------------------------------------------------
 
-ASSDrawSrcTxtCtrl::ASSDrawSrcTxtCtrl(wxWindow *parent, ASSDrawFrame *frame)
-	: wxTextCtrl(parent, wxID_ANY, _T(""), __DPDS__ , wxTE_MULTILINE )
+BEGIN_EVENT_TABLE(ASSDrawSrcTxtCtrl, wxTextCtrl)
+	EVT_CHAR(ASSDrawSrcTxtCtrl::CustomOnChar)
+	EVT_TEXT(wxID_ANY, ASSDrawSrcTxtCtrl::CustomOnText)
+END_EVENT_TABLE()
+
+ASSDrawSrcTxtCtrl::ASSDrawSrcTxtCtrl(wxWindow *parent, ASSDrawFrame *frame) : wxTextCtrl(parent, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE)
 {
 	m_frame = frame;
 }
@@ -87,115 +82,103 @@ void ASSDrawSrcTxtCtrl::CustomOnText(wxCommandEvent &event)
 // ASSDrawTransformDlg
 // ----------------------------------------------------------------------------
 
-ASSDrawTransformDlg::ASSDrawTransformDlg(ASSDrawFrame* parent)
- : wxDialog(parent, -1, wxString(_T("Transform")))
+BEGIN_EVENT_TABLE(ASSDrawTransformDlg, wxDialog)
+	EVT_COMBOBOX(-1, ASSDrawTransformDlg::OnTemplatesCombo)
+END_EVENT_TABLE()
+
+ASSDrawTransformDlg::ASSDrawTransformDlg(ASSDrawFrame* parent) : wxDialog(parent, -1, _T("Transform"))
 {
 	m_frame = parent;
 
-    wxBoxSizer* sizer_main = new wxBoxSizer(wxVERTICAL);
-    this->SetSizer(sizer_main);
+	wxBoxSizer* sizer_main = new wxBoxSizer(wxVERTICAL);
+	this->SetSizer(sizer_main);
 
-    wxBoxSizer* sizer_templates = new wxBoxSizer(wxHORIZONTAL);
-    sizer_main->Add(sizer_templates, 0, wxGROW|wxLEFT, 5);
+	wxBoxSizer* sizer_templates = new wxBoxSizer(wxHORIZONTAL);
+	sizer_main->Add(sizer_templates, 0, wxGROW | wxLEFT, 5);
 
-    sizer_templates->Add(new wxStaticText( this, -1, _("Templates"), __DPDS__ , 0 ),
-						0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	sizer_templates->Add(new wxStaticText(this, -1, _("Templates"), wxDefaultPosition, wxDefaultSize, 0), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    combo_templates = new wxComboBox( this, -1, combo_templatesStrings[0], __DPDS__ , 10, combo_templatesStrings, wxCB_READONLY );
-    sizer_templates->Add(combo_templates, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	combo_templates = new wxComboBox(this, -1, combo_templatesStrings[0], wxDefaultPosition, wxDefaultSize, 10, combo_templatesStrings, wxCB_READONLY);
+	sizer_templates->Add(combo_templates, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    wxFlexGridSizer* sizer_fields = new wxFlexGridSizer(4, 4, 0, 0);
-    sizer_main->Add(sizer_fields, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT, 5);
+	wxFlexGridSizer* sizer_fields = new wxFlexGridSizer(4, 4, 0, 0);
+	sizer_main->Add(sizer_fields, 0, wxALIGN_CENTER_HORIZONTAL | wxLEFT, 5);
 
-	int flag_txtctrl = wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL;
-	int flag_statictxt = wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL;
+	int flag_txtctrl = wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxALL;
+	int flag_statictxt = wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL | wxALL;
 
-	sizer_fields->Add(new wxStaticText( this, -1, _("m11"), __DPDS__ , 0 ),
-						0, flag_statictxt, 5);
+	sizer_fields->Add(new wxStaticText(this, -1, _("m11"), wxDefaultPosition, wxDefaultSize, 0), 0, flag_statictxt, 5);
+	txtctrl_m11 = new wxTextCtrl(this, -1, _T("1.0"), wxDefaultPosition, wxDefaultSize, wxTE_RIGHT);
+	sizer_fields->Add(txtctrl_m11, 0, flag_txtctrl, 5);
 
-    txtctrl_m11 = new wxTextCtrl( this, -1, _T("1.0"), __DPDS__ , wxTE_RIGHT );
-    sizer_fields->Add(txtctrl_m11, 0, flag_txtctrl, 5);
+	sizer_fields->Add(new wxStaticText(this, -1, _("m12"), wxDefaultPosition, wxDefaultSize, 0), 0, flag_statictxt, 5);
+	txtctrl_m12 = new wxTextCtrl(this, -1, _T("0.0"), wxDefaultPosition, wxDefaultSize, wxTE_RIGHT);
+	sizer_fields->Add(txtctrl_m12, 0, flag_txtctrl, 5);
 
-    sizer_fields->Add(new wxStaticText( this, -1, _("m12"), __DPDS__ , 0 ),
-						0, flag_statictxt, 5);
+	sizer_fields->Add(new wxStaticText(this, -1, _("m21"), wxDefaultPosition, wxDefaultSize, 0), 0, flag_statictxt, 5);
+	txtctrl_m21 = new wxTextCtrl(this, -1, _T("0.0"), wxDefaultPosition, wxDefaultSize, wxTE_RIGHT);
+	sizer_fields->Add(txtctrl_m21, 0, flag_txtctrl, 5);
 
-    txtctrl_m12 = new wxTextCtrl( this, -1, _T("0.0"), __DPDS__ , wxTE_RIGHT );
-    sizer_fields->Add(txtctrl_m12, 0, flag_txtctrl, 5);
+	sizer_fields->Add(new wxStaticText(this, -1, _("m22"), wxDefaultPosition, wxDefaultSize, 0), 0, flag_statictxt, 5);
+	txtctrl_m22 = new wxTextCtrl(this, -1, _T("1.0"), wxDefaultPosition, wxDefaultSize, wxTE_RIGHT);
+	sizer_fields->Add(txtctrl_m22, 0, flag_txtctrl, 5);
 
-    sizer_fields->Add(new wxStaticText( this, -1, _("m21"), __DPDS__ , 0 ),
-						0, flag_statictxt, 5);
+	sizer_fields->Add(new wxStaticText(this, -1, _("mx"), wxDefaultPosition, wxDefaultSize, 0), 0, flag_statictxt, 5);
+	txtctrl_mx = new wxTextCtrl(this, -1, _T("0.0"), wxDefaultPosition, wxDefaultSize, wxTE_RIGHT);
+	sizer_fields->Add(txtctrl_mx, 0, flag_txtctrl, 5);
 
-    txtctrl_m21 = new wxTextCtrl( this, -1, _T("0.0"), __DPDS__ , wxTE_RIGHT );
-    sizer_fields->Add(txtctrl_m21, 0, flag_txtctrl, 5);
+	sizer_fields->Add(new wxStaticText(this, -1, _("my"), wxDefaultPosition, wxDefaultSize, 0), 0, flag_statictxt, 5);
+	txtctrl_my = new wxTextCtrl(this, -1, _T("0.0"), wxDefaultPosition, wxDefaultSize, wxTE_RIGHT);
+	sizer_fields->Add(txtctrl_my, 0, flag_txtctrl, 5);
 
-    sizer_fields->Add(new wxStaticText( this, -1, _("m22"), __DPDS__ , 0 ),
-						0, flag_statictxt, 5);
+	sizer_fields->Add(new wxStaticText(this, -1, _("nx"), wxDefaultPosition, wxDefaultSize, 0), 0, flag_statictxt, 5);
+	txtctrl_nx = new wxTextCtrl(this, -1, _T("0.0"), wxDefaultPosition, wxDefaultSize, wxTE_RIGHT);
+	sizer_fields->Add(txtctrl_nx, 0, flag_txtctrl, 5);
 
-    txtctrl_m22 = new wxTextCtrl( this, -1, _T("1.0"), __DPDS__ , wxTE_RIGHT );
-    sizer_fields->Add(txtctrl_m22, 0, flag_txtctrl, 5);
+	sizer_fields->Add(new wxStaticText(this, -1, _("ny"), wxDefaultPosition, wxDefaultSize, 0), 0, flag_statictxt, 5);
+	txtctrl_ny = new wxTextCtrl(this, -1, _T("0.0"), wxDefaultPosition, wxDefaultSize, wxTE_RIGHT);
+	sizer_fields->Add(txtctrl_ny, 0, flag_txtctrl, 5);
 
-    sizer_fields->Add(new wxStaticText( this, -1, _("mx"), __DPDS__ , 0 ),
-						0, flag_statictxt, 5);
+	wxStaticBitmap* staticbmp = new wxStaticBitmap(this, -1, wxBITMAP(transform), wxDefaultPosition, wxSize(224, 56), 0);
+	sizer_main->Add(staticbmp, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-    txtctrl_mx = new wxTextCtrl( this, -1, _T("0.0"), __DPDS__ , wxTE_RIGHT );
-    sizer_fields->Add(txtctrl_mx, 0, flag_txtctrl, 5);
+	wxStdDialogButtonSizer* sizer_stdbutt = new wxStdDialogButtonSizer;
 
-    sizer_fields->Add(new wxStaticText( this, -1, _("my"), __DPDS__ , 0 ),
-						0, flag_statictxt, 5);
+	sizer_main->Add(sizer_stdbutt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+	wxButton* button_ok = new wxButton(this, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0);
+	sizer_stdbutt->AddButton(button_ok);
 
-    txtctrl_my = new wxTextCtrl( this, -1, _T("0.0"), __DPDS__ , wxTE_RIGHT );
-    sizer_fields->Add(txtctrl_my, 0, flag_txtctrl, 5);
+	wxButton* button_cancel = new wxButton(this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0);
+	sizer_stdbutt->AddButton(button_cancel);
 
-    sizer_fields->Add(new wxStaticText( this, -1, _("nx"), __DPDS__ , 0 ),
-						0, flag_statictxt, 5);
-
-    txtctrl_nx = new wxTextCtrl( this, -1, _T("0.0"), __DPDS__ , wxTE_RIGHT );
-    sizer_fields->Add(txtctrl_nx, 0, flag_txtctrl, 5);
-
-    sizer_fields->Add(new wxStaticText( this, -1, _("ny"), __DPDS__ , 0 ),
-						0, flag_statictxt, 5);
-
-    txtctrl_ny = new wxTextCtrl( this, -1, _T("0.0"), __DPDS__ , wxTE_RIGHT );
-    sizer_fields->Add(txtctrl_ny, 0, flag_txtctrl, 5);
-
-    wxStaticBitmap* staticbmp = new wxStaticBitmap( this, -1, wxBITMAP(transform), wxDefaultPosition, wxSize(224, 56), 0 );
-    sizer_main->Add(staticbmp, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-    wxStdDialogButtonSizer* sizer_stdbutt = new wxStdDialogButtonSizer;
-
-    sizer_main->Add(sizer_stdbutt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-    wxButton* button_ok = new wxButton( this, wxID_OK, _("&OK"), __DPDS__ , 0 );
-    sizer_stdbutt->AddButton(button_ok);
-
-    wxButton* button_cancel = new wxButton( this, wxID_CANCEL, _("&Cancel"), __DPDS__ , 0 );
-    sizer_stdbutt->AddButton(button_cancel);
-
-    sizer_stdbutt->Realize();
+	sizer_stdbutt->Realize();
 
 	sizer_main->Fit(this);
-
 }
 
 void ASSDrawTransformDlg::OnTemplatesCombo(wxCommandEvent &event)
 {
 	int pos = -1;
 	for (int i = 0; i < combo_templatesCount; i++)
+	{
 		if (combo_templatesStrings[i].IsSameAs(((wxComboBox *) event.GetEventObject())->GetValue()))
 		{
 			pos = i;
 			break;
 		}
+	}
+
 	if (pos == -1)
 		return;
 
-	txtctrl_m11->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f1) );
-	txtctrl_m12->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f2) );
-	txtctrl_m21->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f3) );
-	txtctrl_m22->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f4) );
-	txtctrl_mx->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f5) );
-	txtctrl_my->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f6) );
-	txtctrl_nx->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f7) );
-	txtctrl_ny->SetValue( wxString::Format(_T("%.1f"), combo_templatesValues[pos].f8) );
+	txtctrl_m11->SetValue(wxString::Format(_T("%.1f"), combo_templatesValues[pos].f1));
+	txtctrl_m12->SetValue(wxString::Format(_T("%.1f"), combo_templatesValues[pos].f2));
+	txtctrl_m21->SetValue(wxString::Format(_T("%.1f"), combo_templatesValues[pos].f3));
+	txtctrl_m22->SetValue(wxString::Format(_T("%.1f"), combo_templatesValues[pos].f4));
+	txtctrl_mx->SetValue(wxString::Format(_T("%.1f"), combo_templatesValues[pos].f5));
+	txtctrl_my->SetValue(wxString::Format(_T("%.1f"), combo_templatesValues[pos].f6));
+	txtctrl_nx->SetValue(wxString::Format(_T("%.1f"), combo_templatesValues[pos].f7));
+	txtctrl_ny->SetValue(wxString::Format(_T("%.1f"), combo_templatesValues[pos].f8));
 }
 
 void ASSDrawTransformDlg::EndModal(int retCode)
@@ -208,25 +191,26 @@ void ASSDrawTransformDlg::EndModal(int retCode)
 
 	bool ok = true;
 
-	ok = ok && txtctrl_m11->GetValue().ToDouble( &xformvals.f1 );
-	ok = ok && txtctrl_m12->GetValue().ToDouble( &xformvals.f2 );
-	ok = ok && txtctrl_m21->GetValue().ToDouble( &xformvals.f3 );
-	ok = ok && txtctrl_m22->GetValue().ToDouble( &xformvals.f4 );
-	ok = ok && txtctrl_mx->GetValue().ToDouble( &xformvals.f5 );
-	ok = ok && txtctrl_my->GetValue().ToDouble( &xformvals.f6 );
-	ok = ok && txtctrl_nx->GetValue().ToDouble( &xformvals.f7 );
-	ok = ok && txtctrl_ny->GetValue().ToDouble( &xformvals.f8 );
+	ok = ok && txtctrl_m11->GetValue().ToDouble(&xformvals.f1);
+	ok = ok && txtctrl_m12->GetValue().ToDouble(&xformvals.f2);
+	ok = ok && txtctrl_m21->GetValue().ToDouble(&xformvals.f3);
+	ok = ok && txtctrl_m22->GetValue().ToDouble(&xformvals.f4);
+	ok = ok && txtctrl_mx->GetValue().ToDouble(&xformvals.f5);
+	ok = ok && txtctrl_my->GetValue().ToDouble(&xformvals.f6);
+	ok = ok && txtctrl_nx->GetValue().ToDouble(&xformvals.f7);
+	ok = ok && txtctrl_ny->GetValue().ToDouble(&xformvals.f8);
 
 	if (ok)
 		wxDialog::EndModal(wxID_OK);
 	else
-	    wxMessageBox(_T("One or more values entered are not real numbers.\nPlease fix."), _T("Value error"), wxOK | wxICON_INFORMATION, m_frame);
-
+		wxMessageBox(_T("One or more values entered are not real numbers.\nPlease fix."), _T("Value error"), wxOK | wxICON_INFORMATION, m_frame);
 }
 
+// ----------------------------------------------------------------------------
+// ASSDrawAboutDlg
+// ----------------------------------------------------------------------------
 
-ASSDrawAboutDlg::ASSDrawAboutDlg(ASSDrawFrame *parent, unsigned timeout)
-	: wxDialog(parent, wxID_ANY, wxString(TITLE), __DPDS__ , wxSIMPLE_BORDER), time_out(timeout)
+ASSDrawAboutDlg::ASSDrawAboutDlg(ASSDrawFrame *parent, unsigned timeout) : wxDialog(parent, wxID_ANY, TITLE, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER), time_out(timeout)
 {
 	SetBackgroundColour(*wxWHITE);
 	htmlwin = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(396, 200), wxHW_DEFAULT_STYLE | wxSIMPLE_BORDER);
@@ -345,10 +329,10 @@ BigStaticBitmapCtrl::~BigStaticBitmapCtrl()
 
 void BigStaticBitmapCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
-    wxPaintDC dc(this);
+	wxPaintDC dc(this);
 	dc.SetBackground(bgbrush);
 	dc.Clear();
-    dc.DrawBitmap(bitmap, wxPoint(0,0));
+	dc.DrawBitmap(bitmap, wxPoint(0,0));
 }
 
 void BigStaticBitmapCtrl::OnMouseLeftDown(wxMouseEvent& event)
