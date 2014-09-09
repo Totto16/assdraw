@@ -2,7 +2,7 @@
 const char *appico_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "32 32 254 2",
-"   c black",
+"   c none",
 ".  c #121508",
 "X  c #1E1913",
 "o  c #222200",
