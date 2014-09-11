@@ -34,7 +34,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "engine.hpp" // the header
-#include "cmd.hpp"    // we need the drawing command classes declaration
 #include <wx/tokenzr.h> // we use string tokenizer
 #include <vector> // ok, we use vector too
 #include <stdio.h>
@@ -115,6 +114,186 @@ DrawCmd::~DrawCmd ( )
 	for (PointList::iterator iter_cpoint = controlpoints.begin();
 			iter_cpoint != controlpoints.end(); iter_cpoint++)
 		delete (*iter_cpoint);
+}
+
+
+
+// ----------------------------------------------------------------------------
+// DrawCmd_M
+// ----------------------------------------------------------------------------
+
+// constructor
+DrawCmd_M::DrawCmd_M ( int x, int y, PointSystem *ps, DrawCmd *prev )
+     : DrawCmd ( x, y, ps, prev )
+{
+     type = M;
+}
+
+// to ASS drawing command
+wxString DrawCmd_M::ToString()
+{
+     return wxString::Format(_T("m %d %d"), m_point->x(), m_point->y());
+}
+
+
+
+// ----------------------------------------------------------------------------
+// DrawCmd_L
+// ----------------------------------------------------------------------------
+
+// constructor
+DrawCmd_L::DrawCmd_L ( int x, int y, PointSystem *ps, DrawCmd *prev )
+     : DrawCmd ( x, y, ps, prev )
+{
+     type = L;
+}
+
+// to ASS drawing command
+wxString DrawCmd_L::ToString()
+{
+     return wxString::Format(_T("l %d %d"), m_point->x(), m_point->y());
+}
+
+
+
+// ----------------------------------------------------------------------------
+// DrawCmd_B
+// ----------------------------------------------------------------------------
+
+// constructor
+DrawCmd_B::DrawCmd_B
+( int x, int y, int x1, int y1, int x2, int y2, PointSystem *ps, DrawCmd *prev )
+    : DrawCmd ( x, y, ps, prev )
+{
+     type = B;
+     controlpoints.push_back( new Point(x1, y1, ps, CP, this, 1) );
+     controlpoints.push_back( new Point(x2, y2, ps, CP, this, 2) );
+     initialized = true;
+     C1Cont = false;
+}
+
+// constructor
+DrawCmd_B::DrawCmd_B ( int x, int y, PointSystem *ps, DrawCmd *prev )
+    : DrawCmd ( x, y, ps, prev )
+{
+     type = B;
+     initialized = false;
+     C1Cont = false;
+}
+
+// initialize; generate control points
+void DrawCmd_B::Init ( unsigned n )
+{
+     // Ignore if this is already initted
+     if (initialized) return;
+
+     wxPoint wx0 = prev->m_point->ToWxPoint();
+     wxPoint wx1 = m_point->ToWxPoint();
+     int xdiff = (wx1.x - wx0.x) / 3;
+     int ydiff = (wx1.y - wx0.y) / 3;
+     int xg, yg;
+
+     // first control
+     m_point->pointsys->FromWxPoint( wx0.x + xdiff, wx0.y + ydiff, xg, yg );
+     controlpoints.push_back( new Point( xg, yg, m_point->pointsys, CP, this, 1 ) );
+
+     // second control
+     m_point->pointsys->FromWxPoint( wx1.x - xdiff, wx1.y - ydiff, xg, yg );
+     controlpoints.push_back( new Point( xg, yg, m_point->pointsys, CP, this, 2 ) );
+
+     initialized = true;
+
+}
+
+// to ASS drawing command
+wxString DrawCmd_B::ToString()
+{
+	if (initialized) {
+		PointList::iterator iterate = controlpoints.begin();
+		Point* c1 = (*iterate++);
+		Point* c2 = (*iterate);
+		return wxString::Format(_T("b %d %d %d %d %d %d"), c1->x(), c1->y(), c2->x(), c2->y(), m_point->x(), m_point->y());
+	}
+	else
+		return wxString::Format(_T("b ? ? ? ? %d %d"), m_point->x(), m_point->y());
+}
+
+
+
+// ----------------------------------------------------------------------------
+// DrawCmd_S
+// ----------------------------------------------------------------------------
+
+// constructor
+DrawCmd_S::DrawCmd_S
+	( int x, int y, PointSystem *ps, DrawCmd *prev )
+    : DrawCmd ( x, y, ps, prev )
+{
+	type = S;
+	initialized = false;
+	closed = false;
+}
+
+// constructor
+DrawCmd_S::DrawCmd_S
+	( int x, int y, std::vector< int > vals, PointSystem *ps, DrawCmd *prev )
+    : DrawCmd ( x, y, ps, prev )
+{
+	type = S;
+	std::vector< int >::iterator it = vals.begin();
+	unsigned n = 0;
+	while (it != vals.end())
+	{
+		int ix = *it; it++;
+		int iy = *it; it++;
+		n++;
+		//::wxLogMessage(_T("%d %d\n"), ix, iy);
+		controlpoints.push_back( new Point( ix, iy, ps, CP, this, n ) );
+	}
+
+	initialized = true;
+	closed = false;
+}
+
+// initialize; generate control points
+void DrawCmd_S::Init(unsigned n)
+{
+     // Ignore if this is already initted
+     if (initialized) return;
+
+     wxPoint wx0 = prev->m_point->ToWxPoint();
+     wxPoint wx1 = m_point->ToWxPoint();
+     int xdiff = (wx1.x - wx0.x) / 3;
+     int ydiff = (wx1.y - wx0.y) / 3;
+     int xg, yg;
+
+     // first control
+     m_point->pointsys->FromWxPoint( wx0.x + xdiff, wx0.y + ydiff, xg, yg );
+     controlpoints.push_back( new Point( xg, yg, m_point->pointsys, CP, this, 1 ) );
+
+     // second control
+     m_point->pointsys->FromWxPoint( wx1.x - xdiff, wx1.y - ydiff, xg, yg );
+     controlpoints.push_back( new Point( xg, yg, m_point->pointsys, CP, this, 2 ) );
+
+     initialized = true;
+
+}
+
+// to ASS drawing command
+wxString DrawCmd_S::ToString()
+{
+	PointList::iterator iterate = controlpoints.begin();
+	wxString assout = _T("s");
+	for (; iterate != controlpoints.end(); iterate++)
+	{
+		if (initialized)
+			assout = wxString::Format(_T("%s %d %d"), assout.c_str(), (*iterate)->x(), (*iterate)->y());
+		else
+			assout = wxString::Format(_T("%s ? ?"), assout.c_str());
+	}
+	assout = wxString::Format(_T("%s %d %d"), assout.c_str(), m_point->x(), m_point->y());
+	if (closed) assout = wxString::Format(_T("%s c"), assout.c_str());
+	return assout;
 }
 
 
@@ -255,9 +434,7 @@ int ASSDrawEngine::ParseASS ( wxString str )
 			currcmd = token;
 		}
 		else if (token.ToLong( &tmp_int ))
-		{
 			val.push_back( (int) tmp_int );
-		}
 	}
 
 	return (int) cmds.size();
@@ -284,7 +461,8 @@ void ASSDrawEngine::ResetEngine( bool addM )
 	for (DrawCmdList::iterator iterate = cmds.begin(); iterate != cmds.end(); iterate++)
 		delete (*iterate);
 	cmds.clear();
-	if (addM) AppendCmd( M, 0, 0 );
+	if (addM)
+		AppendCmd( M, 0, 0 );
 }
 
 // Create draw command of type 'type' and m_point (x, y), append to the
@@ -378,18 +556,6 @@ DrawCmd* ASSDrawEngine::NewCmd ( CMDTYPE type, int x, int y )
      return c;
 }
 
-// returns the iterator for the list
-DrawCmdList::iterator ASSDrawEngine::Iterator ( )
-{
-	return cmds.begin();
-}
-
-// returns the 'end' iterator for the list
-DrawCmdList::iterator ASSDrawEngine::IteratorEnd ( )
-{
-	return cmds.end();
-}
-
 // returns the last command in the list
 DrawCmd* ASSDrawEngine::LastCmd ()
 {
@@ -452,8 +618,6 @@ DrawCmd* ASSDrawEngine::PointAt ( int x, int y )
             c = (*iterate);
      }
 
-     //delete &iterate;
-
      return c;
 }
 
@@ -490,7 +654,8 @@ bool ASSDrawEngine::DeleteCommand ( DrawCmd* cmd )
 
 	DrawCmdList::iterator iterate = cmds.begin();
 	// can't delete the first command without deleting other commands first
-	if ( cmd == (*iterate) && cmds.size() > 1) return false;
+	if (cmd == (*iterate) && cmds.size() > 1)
+		return false;
 
 	DrawCmd* lastiter = NULL;
 

@@ -115,7 +115,7 @@ void ASSDrawFrame::wxColourSetAlpha(wxColour &colour, long alpha)
 	colour.Set(colour.Red(), colour.Green(), colour.Blue(), alpha);
 }
 
-void ASSDrawFrame::OnSettingsChanged(wxCommandEvent& event)
+void ASSDrawFrame::OnSettingsChanged(wxCommandEvent& WXUNUSED(event))
 {
 	ApplySettings();
 }

@@ -47,8 +47,8 @@ public:
 	virtual ~ASSDrawSettingsDialog();
 
 	virtual void Init();
-	virtual void OnSettingsApplyButtonClicked(wxCommandEvent &event);
-	virtual void OnSettingsRevertButtonClicked(wxCommandEvent &event);
+	virtual void OnSettingsApplyButtonClicked(wxCommandEvent& event);
+	virtual void OnSettingsRevertButtonClicked(wxCommandEvent& WXUNUSED(event));
 	virtual void RefreshSettingsDisplay();
 
 	wxPGId colors_canvas_bg_pgid;

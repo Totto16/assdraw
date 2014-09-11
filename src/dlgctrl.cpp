@@ -273,7 +273,7 @@ int ASSDrawAboutDlg::ShowModal()
 	return wxDialog::ShowModal();
 }
 
-void ASSDrawAboutDlg::OnURL(wxHtmlLinkEvent &event)
+void ASSDrawAboutDlg::OnURL(wxHtmlLinkEvent& event)
 {
 	wxString URL(event.GetLinkInfo().GetHref());
 	if (URL.StartsWith(_T("http://")))
@@ -282,13 +282,13 @@ void ASSDrawAboutDlg::OnURL(wxHtmlLinkEvent &event)
 		event.Skip(true);
 }
 
-void ASSDrawAboutDlg::OnTimeout(wxTimerEvent& event)
+void ASSDrawAboutDlg::OnTimeout(wxTimerEvent& WXUNUSED(event))
 {
 	if (IsShown())
 		EndModal(wxID_OK);
 }
 
-void ASSDrawAboutDlg::OnMouseEnterWindow(wxMouseEvent& event)
+void ASSDrawAboutDlg::OnMouseEnterWindow(wxMouseEvent& WXUNUSED(event))
 {
 	// if mouse enters this dialog, stop the timout timer and dialog will only close through user input
 	timer.Stop();

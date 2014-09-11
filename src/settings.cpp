@@ -168,7 +168,7 @@ void ASSDrawSettingsDialog::OnSettingsApplyButtonClicked(wxCommandEvent &event)
 	m_frame->GetEventHandler()->ProcessEvent(evento);
 }
 
-void ASSDrawSettingsDialog::OnSettingsRevertButtonClicked(wxCommandEvent &event)
+void ASSDrawSettingsDialog::OnSettingsRevertButtonClicked(wxCommandEvent& WXUNUSED(event))
 {
 	RefreshSettingsDisplay();
 }

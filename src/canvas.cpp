@@ -34,7 +34,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "assdraw.hpp"
-#include "cmd.hpp"
 #include "agg_gsv_text.h"
 #include "agg_ellipse.h"
 #include "agg_conv_dash.h"
@@ -970,10 +969,12 @@ void ASSDrawCanvas::ChangeZoomLevel( double amount, wxPoint bgzoomctr )
 		ChangeDrawingZoomLevel( amount );
 
 	if (CanZoom() && drag_mode.bgimg)
+	{
 		if (drag_mode.drawing)
 			ChangeBackgroundZoomLevel(bgimg.scale * pointsys->scale / old_scale, wxRealPoint(pointsys->originx, pointsys->originy));
 		else
 			ChangeBackgroundZoomLevel(bgimg.scale + amount / 10.0,  wxRealPoint(bgzoomctr.x, bgzoomctr.y));
+	}
 
 	RefreshDisplay();
 }
@@ -1028,7 +1029,7 @@ void ASSDrawCanvas::MoveCanvasDrawing(double xamount, double yamount)
 		}
 		unsigned vertices = backupcmds.total_vertices();
 		double x, y;
-		for (int i = 0; i < vertices; i++)
+		for (unsigned i = 0; i < vertices; i++)
 		{
 			backupcmds.vertex(i, &x, &y);
 			backupcmds.modify_vertex(i, x + xamount, y + yamount);
@@ -1122,7 +1123,7 @@ void ASSDrawCanvas::EnforceC1Continuity (DrawCmd* cmd, Point* pnt)
 		theotherpoint = *it;
 		mainpoint = prevb->m_point;
 	}
-	else if (pnt->num = cmd->controlpoints.size())
+	else if (pnt->num == cmd->controlpoints.size())
 	{
 		DrawCmd_B *thisb = static_cast< DrawCmd_B* >(cmd);
 		if (!thisb->C1Cont) return;
@@ -1284,7 +1285,7 @@ SELECTMODE ASSDrawCanvas::GetSelectMode(wxMouseEvent& event)
 
 void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, RendererSolid& rsolid, agg::trans_affine& mtx )
 {
-	ASSDrawEngine::Draw_Clear( rbase );
+	Draw_Clear( rbase );
 	int ww, hh; GetClientSize(&ww, &hh);
 
 	if (bgimg.bgbmp)
@@ -1292,7 +1293,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 		rasterizer.reset();
 		interpolator_type interpolator(bgimg.img_mtx);
 		PixelFormat::AGGType ipixfmt(bgimg.ibuf);
-		span_gen_type spangen(ipixfmt, agg::rgba_pre(0, 0, 0), interpolator);
+		span_gen_type spangen(ipixfmt, agg::rgba_pre(0, 0, 0, 1), interpolator);
 		agg::conv_transform< agg::path_storage > bg_border(bgimg.bg_path, bgimg.path_mtx);
 		agg::conv_clip_polygon< agg::conv_transform< agg::path_storage > > bg_clip(bg_border);
 		bg_clip.clip_box(0, 0, ww, hh);
@@ -1300,7 +1301,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 		agg::render_scanlines_aa(rasterizer, scanline, rbase, bgimg.spanalloc, spangen);
 	}
 
-	ASSDrawEngine::Draw_Draw( rbase, rprim, rsolid, mtx, preview_mode? rgba_shape:rgba_shape_normal );
+	Draw_Draw( rbase, rprim, rsolid, mtx, preview_mode? rgba_shape:rgba_shape_normal );
 
 	if (!preview_mode)
 	{
@@ -1752,7 +1753,7 @@ void ASSDrawCanvas::UpdateNonUniformTransformation()
 	agg::trans_bilinear trans_b(rectbound[0].x, rectbound[0].y, rectbound[2].x, rectbound[2].y, bound);
 	agg::conv_transform<agg::path_storage, agg::trans_bilinear> transb(backupcmds, trans_b);
 	transb.rewind(0);
-	for (int i = 0; i < vertices; i++)
+	for (unsigned i = 0; i < vertices; i++)
 	{
 		double x, y;
 		transb.vertex(&x, &y);

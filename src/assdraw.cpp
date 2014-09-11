@@ -63,8 +63,7 @@
 #endif
 #endif
 
-
-//DEFINE_EVENT_TYPE(wxEVT_SETTINGS_CHANGED)
+#define DEFAULT_SCALE 10
 
 // initialize wxWidget to accept our App class
 IMPLEMENT_APP(ASSDrawApp)

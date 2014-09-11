@@ -59,18 +59,6 @@
 #include "agg_conv_bcspline.h"
 #include "agg_math.h"
 
-#define DEFAULT_SCALE 10
-
-// this header file declare the following classes
-class DrawEngine;
-class Point;
-class PointSystem;
-class DrawCmd;
-
-typedef std::list<DrawCmd*> DrawCmdList;
-typedef std::list<Point*> PointList;
-typedef std::set<Point*> PointSet;
-
 // Command type
 enum CMDTYPE 
 {
@@ -125,6 +113,8 @@ public:
 	}
 };
 
+class DrawCmd;
+
 // The point class
 // note: this actually refers to the x,y-coordinate in drawing commands,
 // not the coordinate in the GUI
@@ -172,6 +162,9 @@ private:
 
 };
 
+typedef std::list<Point*> PointList;
+typedef std::set<Point*> PointSet;
+
 // The base class for all draw commands
 class DrawCmd
 {
@@ -213,6 +206,74 @@ public:
 
 	virtual wxString ToString() { return wxT(""); }
 
+};
+
+typedef std::list<DrawCmd*> DrawCmdList;
+
+// The M command
+class DrawCmd_M: public DrawCmd
+{
+public:
+	// Constructor
+	DrawCmd_M ( int x, int y, PointSystem *ps, DrawCmd *prev );
+
+	// to ASS drawing command
+	wxString ToString();
+
+};
+
+// The L command
+class DrawCmd_L: public DrawCmd
+{
+public:
+	// Constructor
+	DrawCmd_L ( int x, int y, PointSystem *ps, DrawCmd *prev );
+
+	// to ASS drawing command
+	wxString ToString();
+
+};
+
+// The B command
+class DrawCmd_B: public DrawCmd
+{
+public:
+	// Constructor
+	DrawCmd_B ( int x, int y, int x1, int y1, int x2, int y2,  PointSystem *ps, DrawCmd *prev );
+
+	// Special constructor where only m_point is defined
+	// Need to call Init() to generate the controls
+	DrawCmd_B ( int x, int y, PointSystem *ps, DrawCmd *prev );
+
+	// Init this B command; generate controlpoints
+	void Init ( unsigned n = 0 );
+
+	// to ASS drawing command
+	wxString ToString();
+
+	//special
+	bool C1Cont;
+
+};
+
+// The S command
+class DrawCmd_S: public DrawCmd
+{
+public:
+	// Constructor
+	DrawCmd_S ( int x, int y, PointSystem *ps, DrawCmd *prev );
+
+	// Constructor (with points info)
+	DrawCmd_S ( int x, int y, std::vector< int > vals, PointSystem *ps, DrawCmd *prev );
+
+	// Init this S command; generate controlpoints
+	void Init ( unsigned n = 0 );
+
+	// to ASS drawing command
+	wxString ToString();
+
+	// special
+	bool closed;
 };
 
 class ASSDrawEngine: public GUI::AGGWindow
@@ -264,10 +325,10 @@ public:
 	// -------------------- read/modify commands ---------------------------
 
 	// returns the iterator for the list
-	virtual DrawCmdList::iterator Iterator ( );
+	virtual DrawCmdList::iterator Iterator() { return cmds.begin(); }
 
 	// returns the 'end' iterator for the list
-	virtual DrawCmdList::iterator IteratorEnd ( );
+	virtual DrawCmdList::iterator IteratorEnd() { return cmds.end(); }
 
 	// returns the last command in the list
 	virtual DrawCmd* LastCmd ();

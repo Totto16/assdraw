@@ -16,7 +16,6 @@ assdraw_SOURCES = \
 	assdraw_settings.cpp \
 	canvas.cpp \
 	canvas_mouse.cpp \
-	cmd.cpp \
 	dlgctrl.cpp \
 	engine.cpp \
 	library.cpp \
@@ -25,8 +24,7 @@ assdraw_SOURCES = \
 assdraw_SOURCES += \
 	agg_bcspline.h \
 	agg_conv_bcspline.h \
-	agg_vcgen_bcspline.h \
-	resource.h
+	agg_vcgen_bcspline.h
 
 EXTRA_DIST = \
 	_common.hpp \
@@ -34,7 +32,6 @@ EXTRA_DIST = \
 	assdraw.hpp \
 	canvas.hpp \
 	canvas_mouse.hpp \
-	cmd.hpp \
 	dlgctrl.hpp \
 	engine.hpp \
 	enums.hpp \

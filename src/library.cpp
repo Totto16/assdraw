@@ -99,7 +99,7 @@ ASSDrawShapeLibrary::ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame 
 	SetSizer(libsizer);
 }
 
-void ASSDrawShapeLibrary::OnSize(wxSizeEvent& event)
+void ASSDrawShapeLibrary::OnSize(wxSizeEvent& WXUNUSED(event))
 {
 	if (sizer == NULL || sizer->GetChildren().size() == 0) return;
 

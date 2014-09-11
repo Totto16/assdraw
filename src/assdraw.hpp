@@ -50,8 +50,9 @@
 #include "settings.hpp" // settings property grid
 #include "library.hpp" // shape library
 
-//#define BETAVERSION 2
+#ifndef VERSION
 #define VERSION _T("3.0 final")
+#endif
 
 class ASSDrawApp : public wxApp 
 { 
@@ -88,7 +89,7 @@ public:
 	void OnZoomSliderChanged(wxScrollEvent &event);
 	void OnToolRClick(wxCommandEvent& event);
 	void OnChoose_TBarRClickMenu(wxCommandEvent& event);
-	void OnSettingsChanged(wxCommandEvent& event);
+	void OnSettingsChanged(wxCommandEvent& WXUNUSED(event));
 	void OnClose(wxCloseEvent &event);
 
 	void UpdateASSCommandStringToSrcTxtCtrl(wxString cmds);

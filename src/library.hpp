@@ -65,7 +65,7 @@ class ASSDrawShapeLibrary : public wxScrolledWindow
 public:
 	ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame );
 	virtual ASSDrawShapePreview* AddShapePreview(wxString cmds, bool addtotop = false);
-	virtual void OnSize(wxSizeEvent& event);
+	virtual void OnSize(wxSizeEvent& WXUNUSED(event));
 	virtual void OnMouseLeftDClick(wxMouseEvent &event);
 	virtual void OnMouseRightClick(wxMouseEvent &event);
 	virtual void OnPopupMenuClicked(wxCommandEvent &event);
