@@ -28,6 +28,7 @@
 #pragma once
 
 #include "engine.hpp"
+
 #include <wx/scrolwin.h>
 
 class ASSDrawFrame;
@@ -75,7 +76,7 @@ public:
 	virtual void UpdatePreviewDisplays();
 	virtual std::vector< ASSDrawShapePreview *> GetShapePreviews();
 	virtual void LoadToCanvas(ASSDrawShapePreview *preview);
-	
+
 	wxScrolledWindow* libarea;
 	wxFlexGridSizer *libsizer;
 	wxSizer* sizer;

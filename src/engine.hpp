@@ -35,40 +35,42 @@
 
 #pragma once
 
-#include "_common.hpp"
-
 // we use these 2 standard libraries
 #include <math.h>
 #include <list>
 #include <set>
 #include <vector>
 
+#include "_common.hpp"
+
 // agg support
 #include "wxAGG/AGGWindow.h"
+
 #include "agg_color_rgba.h"
+#include "agg_rendering_buffer.h"
 #include "agg_rasterizer_scanline_aa.h"
 #include "agg_scanline_p.h"
+#include "agg_path_storage.h"
 #include "agg_renderer_base.h"
 #include "agg_renderer_primitives.h"
 #include "agg_renderer_scanline.h"
-#include "agg_path_storage.h"
-#include "agg_curves.h"
+#include "agg_trans_affine.h"
+#include "agg_conv_transform.h"
 #include "agg_conv_curve.h"
-#include "agg_conv_contour.h"
+#include "agg_conv_dash.h"
 #include "agg_conv_stroke.h"
-#include "agg_conv_bcspline.h"
-#include "agg_math.h"
+#include "agg_conv_contour.h"
 
 // Command type
-enum CMDTYPE 
+enum CMDTYPE
 {
-     M = 0,
-     N = 1,
-     L = 2,
-     B = 3,
-     S = 4,
-     P = 5,
-     C = 6     
+	M = 0,
+	N = 1,
+	L = 2,
+	B = 3,
+	S = 4,
+	P = 5,
+	C = 6
 };
 
 // Point type
@@ -83,44 +85,66 @@ enum POINTTYPE
 class PointSystem
 {
 public:
-	double scale, originx, originy;
-
-	PointSystem ( double sc = 1.0, double origx = 0.0, double origy = 0.0 )
-	{ 	Set( sc, origx, origy ); }
+	PointSystem(double sc = 1.0, double origx = 0.0, double origy = 0.0) { Set(sc, origx, origy); }
 
 	// set scale, originx and originy;
-	void Set( double sc, double origx, double origy )
-	{ scale = sc, originx = origx, originy = origy; }
-	
-	wxRealPoint ToWxRealPoint ( double x, double y )
-	{ return wxRealPoint( originx + x * scale, originy + y * scale ); }
+	void Set(double sc, double origx, double origy)
+	{
+		scale = sc;
+		originx = origx;
+		originy = origy;
+	}
+
+	wxRealPoint ToWxRealPoint(double x, double y) { return wxRealPoint(originx + x * scale, originy + y * scale); }
 
 	// given drawing command coordinates returns the wxPoint on the GUI
-	wxPoint ToWxPoint ( double x, double y )
-	{ return wxPoint( (int) (originx + x * scale), (int) (originy + y * scale) ); }
+	wxPoint ToWxPoint(double x, double y) { return wxPoint((int) (originx + x * scale), (int) (originy + y * scale)); }
 
 	// given wxPoint on the GUI returns the nearest drawing command coords
-	void FromWxPoint ( int wxpx, int wxpy, int &x, int &y )
+	void FromWxPoint(int wxpx, int wxpy, int &x, int &y)
 	{
-		x = int( floor( ((double) wxpx - originx) / scale + 0.5 ) );
-		y = int( floor( ((double) wxpy - originy) / scale + 0.5 ) );
-	}                   
-
-	// given wxPoint on the GUI returns the nearest drawing command coords
-	void FromWxPoint ( wxPoint wxp, int &x, int &y )
-	{
-		FromWxPoint( wxp.x, wxp.y, x, y );
+		x = int(floor(((double) wxpx - originx) / scale + 0.5));
+		y = int(floor(((double) wxpy - originy) / scale + 0.5));
 	}
+
+	// given wxPoint on the GUI returns the nearest drawing command coords
+	void FromWxPoint(wxPoint wxp, int &x, int &y) { FromWxPoint(wxp.x, wxp.y, x, y); }
+
+	double scale, originx, originy;
 };
 
 class DrawCmd;
 
 // The point class
-// note: this actually refers to the x,y-coordinate in drawing commands,
-// not the coordinate in the GUI
+// note: this actually refers to the x,y-coordinate in drawing commands, not the coordinate in the GUI
 class Point
 {
 public:
+	Point(int _x, int _y, PointSystem* ps, POINTTYPE t, DrawCmd* cmd, unsigned n = 0);
+
+	// getters
+	int x() { return x_; }
+	int y() { return y_; }
+
+	//set x and y
+	void setXY(int _x, int _y)
+	{
+		x_ = _x;
+		y_ = _y;
+	}
+
+	// simply returns true if px and py are the coordinate values
+	bool IsAt(int px, int py) { return (x_ == px && y_ == py); }
+
+	// convert this point to wxPoint using scale and originx, originy
+	wxPoint ToWxPoint() { return ToWxPoint(true); }
+
+	// convert this point to wxPoint using scale; also use originx and originy if useorigin = true
+	wxPoint ToWxPoint(bool useorigin);
+
+	// check if wxpoint is nearby this point
+	bool CheckWxPoint(wxPoint wxpoint);
+
 	POINTTYPE type;
 	PointSystem *pointsys;
 
@@ -130,36 +154,8 @@ public:
 	bool isselected;
 	unsigned num;
 
-	// constructor
-	//Point ( ) { cmd_main = NULL; cmd_next = NULL; }
-
-	// constructor
-	Point ( int _x, int _y, PointSystem* ps, POINTTYPE t, DrawCmd* cmd, unsigned n = 0 );
-
-	// getters
-	int x() { return x_; }
-
-	int y() { return y_; }
-
-	//set x and y
-	void setXY( int _x, int _y);
-	
-	// simply returns true if px and py are the coordinate values
-	bool IsAt( int px, int py );
-
-	// convert this point to wxPoint using scale and originx, originy
-	wxPoint ToWxPoint () { return ToWxPoint(true); }
-
-	// convert this point to wxPoint using scale;
-	// also use originx and originy if useorigin = true
-	wxPoint ToWxPoint (bool useorigin);
-
-	// check if wxpoint is nearby this point
-	bool CheckWxPoint ( wxPoint wxpoint );
-
 private:
 	int x_, y_;
-
 };
 
 typedef std::list<Point*> PointList;
@@ -169,43 +165,32 @@ typedef std::set<Point*> PointSet;
 class DrawCmd
 {
 public:
+	DrawCmd(int x, int y, PointSystem *ps, DrawCmd *pv);
+	virtual ~DrawCmd();
+
+	// Init the draw command (for example to generate the control points)
+	virtual void Init() { initialized = true; }
+	virtual wxString ToString() { return wxT(""); }
+
 	CMDTYPE type;
-	      
-	// main point (almost every command has one)
-	// for B and S it's the last (destination) point
+
+	// main point (almost every command has one) for B and S it's the last (destination) point
 	Point* m_point;
 
-	// other points than the main point
-	// subclasses must populate this list even if they define 
-	// new variables for other points
-	PointList controlpoints; 
+	// other points than the main point, subclasses must populate this list even if they define new variables for other points
+	PointList controlpoints;
 
 	// Linked list feature
 	DrawCmd *prev;
 
-	// Must set to true if the next command should NOT utilize this command
-	// for the drawing
+	// Must set to true if the next command should NOT utilize this command for the drawing
 	bool dobreak;
 
 	// Set to true if invisible m_point (not drawn)
 	bool invisible;
 
-	// true if this DrawCmd has been initialized with Init(), false otherwise
-	// (initialized means that the control points have been generated)
+	// true if this DrawCmd has been initialized with Init(), false otherwise (initialized means that the control points have been generated)
 	bool initialized;
-
-	// -----------------------------------------------------------
-	// Constructor(s)
-	DrawCmd ( int x, int y, PointSystem *ps, DrawCmd *pv );
-	      
-	// Destructor
-	virtual ~DrawCmd ();
-
-	// Init the draw command (for example to generate the control points)
-	virtual void Init(unsigned n = 0) { initialized = true; }
-
-	virtual wxString ToString() { return wxT(""); }
-
 };
 
 typedef std::list<DrawCmd*> DrawCmdList;
@@ -214,158 +199,122 @@ typedef std::list<DrawCmd*> DrawCmdList;
 class DrawCmd_M: public DrawCmd
 {
 public:
-	// Constructor
-	DrawCmd_M ( int x, int y, PointSystem *ps, DrawCmd *prev );
+	DrawCmd_M(int x, int y, PointSystem *ps, DrawCmd *prev) : DrawCmd(x, y, ps, prev) { type = M; }
 
-	// to ASS drawing command
-	wxString ToString();
-
+	wxString ToString() { return wxString::Format(_T("m %d %d"), m_point->x(), m_point->y()); }
 };
 
 // The L command
 class DrawCmd_L: public DrawCmd
 {
 public:
-	// Constructor
-	DrawCmd_L ( int x, int y, PointSystem *ps, DrawCmd *prev );
+	DrawCmd_L(int x, int y, PointSystem *ps, DrawCmd *prev) : DrawCmd(x, y, ps, prev) { type = L; }
 
-	// to ASS drawing command
-	wxString ToString();
-
+	wxString ToString() { return wxString::Format(_T("l %d %d"), m_point->x(), m_point->y()); }
 };
 
 // The B command
 class DrawCmd_B: public DrawCmd
 {
 public:
-	// Constructor
-	DrawCmd_B ( int x, int y, int x1, int y1, int x2, int y2,  PointSystem *ps, DrawCmd *prev );
-
-	// Special constructor where only m_point is defined
-	// Need to call Init() to generate the controls
-	DrawCmd_B ( int x, int y, PointSystem *ps, DrawCmd *prev );
+	DrawCmd_B(int x, int y, int x1, int y1, int x2, int y2, PointSystem *ps, DrawCmd *prev);
+	DrawCmd_B(int x, int y, PointSystem *ps, DrawCmd *prev);
 
 	// Init this B command; generate controlpoints
-	void Init ( unsigned n = 0 );
-
-	// to ASS drawing command
+	void Init();
 	wxString ToString();
 
-	//special
 	bool C1Cont;
-
 };
 
 // The S command
 class DrawCmd_S: public DrawCmd
 {
 public:
-	// Constructor
-	DrawCmd_S ( int x, int y, PointSystem *ps, DrawCmd *prev );
-
-	// Constructor (with points info)
-	DrawCmd_S ( int x, int y, std::vector< int > vals, PointSystem *ps, DrawCmd *prev );
+	DrawCmd_S(int x, int y, PointSystem *ps, DrawCmd *prev);
+	DrawCmd_S(int x, int y, std::vector<int> vals, PointSystem *ps, DrawCmd *prev);
 
 	// Init this S command; generate controlpoints
-	void Init ( unsigned n = 0 );
+	void Init();
 
-	// to ASS drawing command
 	wxString ToString();
 
-	// special
 	bool closed;
 };
 
-class ASSDrawEngine: public GUI::AGGWindow
+class ASSDrawEngine : public GUI::AGGWindow
 {
 public:
-	ASSDrawEngine( wxWindow *parent, int extraflags = 0 );
-
-    // destructor
-    ~ASSDrawEngine();
+	ASSDrawEngine(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTAB_TRAVERSAL);
+	virtual ~ASSDrawEngine();
 
 	virtual void SetDrawCmdSet(wxString set) { drawcmdset = set; }
 
-    virtual void ResetEngine();
-    virtual void ResetEngine(bool addM);
-    virtual void RefreshDisplay();
+	virtual void ResetEngine(bool addM = true);
+	virtual void RefreshDisplay();
 
 	void FitToViewPoint(int hmargin, int vmargin);
 	void SetFitToViewPointOnNextPaint(int hmargin = -1, int vmargin = -1);
 
 	PointSystem* _PointSystem() { return pointsys; }
 
-	// ASS draw commands; returns the number of parsed commands
-	virtual int ParseASS ( wxString str );
-	// generate ASS draw commands
-	virtual wxString GenerateASS ( );
+	virtual int ParseASS(wxString str);
+	virtual wxString GenerateASS();
 
 	// drawing
-    virtual void OnPaint(wxPaintEvent &event);
+	virtual void OnPaint(wxPaintEvent &event);
 
 	// -------------------- adding new commands ----------------------------
+	virtual DrawCmd* AppendCmd(CMDTYPE type, int x, int y) { return AppendCmd( NewCmd( type, x, y ) ); }
+	virtual DrawCmd* AppendCmd(DrawCmd* cmd);
 
-	// create draw command of type 'type' and m_point (x, y), append to the
-	// list and return it
-	virtual DrawCmd* AppendCmd ( CMDTYPE type, int x, int y );
-
-	// append draw command
-	virtual DrawCmd* AppendCmd ( DrawCmd* cmd );
-
-	// create draw command of type 'type' and m_point (x, y), insert to the
-	// list after the _cmd and return it
-	virtual DrawCmd* InsertCmd ( CMDTYPE type, int x, int y, DrawCmd* _cmd );
-
+	// create draw command of type 'type' and m_point (x, y), insert to the list after the _cmd and return it
+	virtual DrawCmd* InsertCmd(CMDTYPE type, int x, int y, DrawCmd* _cmd);
 	// insert draw command cmd after _cmd
-	virtual void InsertCmd ( DrawCmd* cmd, DrawCmd* _cmd );
+	virtual void InsertCmd(DrawCmd* cmd, DrawCmd* _cmd);
 
-	// Create new DrawCmd
-	DrawCmd* NewCmd ( CMDTYPE type, int x, int y );
+	DrawCmd* NewCmd(CMDTYPE type, int x, int y);
 
 	// -------------------- read/modify commands ---------------------------
-
-	// returns the iterator for the list
 	virtual DrawCmdList::iterator Iterator() { return cmds.begin(); }
-
-	// returns the 'end' iterator for the list
 	virtual DrawCmdList::iterator IteratorEnd() { return cmds.end(); }
 
-	// returns the last command in the list
-	virtual DrawCmd* LastCmd ();
-
-	// returns the total number of commands in the list
-	//virtual int CmdCount () { return cmds.size(); }
+	virtual DrawCmd* LastCmd();
 
 	// move all points by relative amount of x, y coordinates
-	virtual void MovePoints ( int x, int y );
+	virtual void MovePoints(int x, int y);
 
 	// transform all points using the calculation:
 	//   | (m11)  (m12) | x | (x - mx) | + | nx |
 	//   | (m21)  (m22) |   | (y - my) |   | ny |
-	virtual void Transform( float m11, float m12, float m21, float m22,
-							float mx, float my, float nx, float ny );
+	virtual void Transform(float m11, float m12, float m21, float m22, float mx, float my, float nx, float ny);
 
 	// returns some DrawCmd if its m_point = (x, y)
-	virtual DrawCmd* PointAt ( int x, int y );
+	virtual DrawCmd* PointAt(int x, int y);
+	// returns some DrawCmd if one of its control point = (x, y) also set &point to refer to that control point
+	virtual DrawCmd* ControlAt(int x, int y, Point* &point);
 
-	// returns some DrawCmd if one of its control point = (x, y)
-	// also set &point to refer to that control point
-	virtual DrawCmd* ControlAt ( int x, int y, Point* &point );
+	virtual bool DeleteCommand(DrawCmd* cmd);
 
-	// attempts to delete a commmand, returns true|false if successful|fail
-	virtual bool DeleteCommand ( DrawCmd* cmd );
-	
+	// Colours
 	agg::rgba rgba_shape;
 	PixelFormat::AGGType::color_type color_bg;
 
 protected:
-	/// The AGG base renderer
 	typedef agg::renderer_base<PixelFormat::AGGType> RendererBase;
-	/// The AGG primitives renderer
 	typedef agg::renderer_primitives<RendererBase> RendererPrimitives;
-	/// The AGG solid renderer
 	typedef agg::renderer_scanline_aa_solid<RendererBase> RendererSolid;
-	
+
+	typedef agg::conv_transform<agg::path_storage> ConvTrans;
+
+	typedef agg::conv_transform<agg::path_storage, agg::trans_affine> ConvTransAffine;
+	typedef agg::conv_curve<ConvTransAffine> ConvCurveTransAffine;
+	typedef agg::conv_dash<ConvCurveTransAffine> ConvDashCurveTransAffine;
+
+	typedef agg::conv_curve<agg::path_storage> ConvCurve;
+	typedef agg::conv_dash<ConvCurve> ConvDashCurve;
+	typedef agg::conv_stroke<ConvDashCurve> ConvStrokeDashCurve;
+
 	enum DRAWCMDMODE {
 		NORMAL,
 		CTRL_LN,
@@ -376,92 +325,80 @@ protected:
 	wxString drawcmdset;
 
 	PointSystem* pointsys;
-	
+
 	// for FitToViewPoint feature
 	bool setfitviewpoint;
 	int fitviewpoint_vmargin, fitviewpoint_hmargin;
 
-	// AGG
-	agg::rasterizer_scanline_aa<> rasterizer;   ///< Scanline rasterizer
-	agg::scanline_p8  scanline;                 ///< Scanline container
+	// scanline stuff
+	agg::rasterizer_scanline_aa<> rasterizer;
+	agg::scanline_p8  scanline;
 	void render_scanlines_aa_solid(RendererBase& rbase, agg::rgba rbga, bool affectboundaries = true);
 	void render_scanlines(RendererSolid& rsolid, bool affectboundaries = true);
-	int rendered_min_x, rendered_min_y, rendered_max_x, rendered_max_y; //bounding coord of rendered shapes
-	void update_rendered_bound_coords(bool rendered_fresh = false);
+	int rendered_min_x, rendered_min_y, rendered_max_x, rendered_max_y;
+	void UpdateRenderedBoundCoords(bool rendered_fresh = false);
 
-	typedef agg::conv_transform<agg::path_storage> trans_path;
-	agg::path_storage m_path, b_path;
-	trans_path *rm_path, *rb_path;
-	agg::conv_curve<trans_path> *rm_curve;
+	agg::path_storage m_path;
+	agg::path_storage b_path;
+	ConvTransAffine *rm_path;
+	ConvTransAffine *rb_path;
+	ConvCurveTransAffine *rm_curve;
 
 	void draw();
-	virtual void ConstructPathsAndCurves(agg::trans_affine& mtx, trans_path*& _rm_path, trans_path*& _rb_path, agg::conv_curve<trans_path>*& _rm_curve);
-	virtual void DoDraw( RendererBase& rbase, RendererPrimitives& rprim, RendererSolid& rsolid, agg::trans_affine& mtx  );
-	virtual void Draw_Clear( RendererBase& rbase );
-	virtual void Draw_Draw( RendererBase& rbase, RendererPrimitives& rprim, RendererSolid& rsolid, agg::trans_affine& mtx, agg::rgba color );
+	virtual void ConstructPathsAndCurves(agg::trans_affine& mtx, ConvTransAffine*& _rm_path, ConvTransAffine*& _rb_path, ConvCurveTransAffine*& _rm_curve);
+	virtual void DoDraw(RendererBase& rbase, RendererPrimitives& rprim, RendererSolid& rsolid, agg::trans_affine& mtx);
+	virtual void Draw_Clear(RendererBase& rbase);
+	virtual void Draw_Draw(RendererBase& rbase, RendererPrimitives& rprim, RendererSolid& rsolid, agg::trans_affine& mtx, agg::rgba color);
 	bool refresh_called;
-	
-	// set stuff to connect two drawing commands cmd1 and cmd2 such that
-	// cmd1 comes right before cmd2
-	virtual void ConnectSubsequentCmds (DrawCmd* cmd1, DrawCmd* cmd2);
-	
+
+	// set stuff to connect two drawing commands cmd1 and cmd2 such that cmd1 comes right before cmd2
+	virtual void ConnectSubsequentCmds(DrawCmd* cmd1, DrawCmd* cmd2);
+
 	virtual void AddDrawCmdToAGGPathStorage(DrawCmd* cmd, agg::path_storage& path, DRAWCMDMODE mode = NORMAL);
-	
-	virtual std::vector< bool > PrepareC1ContData();
+
+	virtual std::vector<bool> PrepareC1ContData();
 
 	DECLARE_EVENT_TABLE()
 };
 
 namespace agg
 {
-    class simple_polygon_vertex_source
-    {
-    public:
-        simple_polygon_vertex_source(const double* polygon, unsigned np, 
-                                     bool roundoff = false,
-                                     bool close = true) :
-            m_polygon(polygon),
-            m_num_points(np),
-            m_vertex(0),
-            m_roundoff(roundoff),
-            m_close(close)
-        {
-        }
+	class simple_polygon_vertex_source
+	{
+	public:
+		simple_polygon_vertex_source(const double* polygon, unsigned np, bool roundoff = false, bool close = true) : m_polygon(polygon), m_num_points(np), m_vertex(0), m_roundoff(roundoff), m_close(close) { }
 
-        void close(bool f) { m_close = f;    }
-        bool close() const { return m_close; }
+		void close(bool f) { m_close = f; }
+		bool close() const { return m_close; }
 
-        void rewind(unsigned)
-        {
-            m_vertex = 0;
-        }
+		void rewind(unsigned) { m_vertex = 0; }
 
-        unsigned vertex(double* x, double* y)
-        {
-            if(m_vertex > m_num_points) return path_cmd_stop;
-            if(m_vertex == m_num_points) 
-            {
-                ++m_vertex;
-                return path_cmd_end_poly | (m_close ? path_flags_close : 0);
-            }
-            *x = m_polygon[m_vertex * 2];
-            *y = m_polygon[m_vertex * 2 + 1];
-            if(m_roundoff)
-            {
-                *x = floor(*x) + 0.5;
-                *y = floor(*y) + 0.5;
-            }
-            ++m_vertex;
-            return (m_vertex == 1) ? path_cmd_move_to : path_cmd_line_to;
-        }
+		unsigned vertex(double* x, double* y)
+		{
+			if(m_vertex > m_num_points) return path_cmd_stop;
+			if(m_vertex == m_num_points)
+			{
+				++m_vertex;
+				return path_cmd_end_poly | (m_close ? path_flags_close : 0);
+			}
+			*x = m_polygon[m_vertex * 2];
+			*y = m_polygon[m_vertex * 2 + 1];
+			if(m_roundoff)
+			{
+				*x = floor(*x) + 0.5;
+				*y = floor(*y) + 0.5;
+			}
+			++m_vertex;
+			return (m_vertex == 1) ? path_cmd_move_to : path_cmd_line_to;
+		}
 
-    private:
-        const double* m_polygon;
-        unsigned m_num_points;
-        unsigned m_vertex;
-        bool     m_roundoff;
-        bool     m_close;
-    };
-};
+	private:
+		const double* m_polygon;
+		unsigned m_num_points;
+		unsigned m_vertex;
+		bool     m_roundoff;
+		bool     m_close;
+	};
+}
 
 typedef agg::simple_polygon_vertex_source aggpolygon;

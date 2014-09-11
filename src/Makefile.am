@@ -28,7 +28,6 @@ assdraw_SOURCES += \
 
 EXTRA_DIST = \
 	_common.hpp \
-	agghelper.hpp 
 	assdraw.hpp \
 	canvas.hpp \
 	canvas_mouse.hpp \

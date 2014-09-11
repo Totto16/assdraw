@@ -38,8 +38,8 @@ class ASSDrawSrcTxtCtrl : public wxTextCtrl
 public:
 	ASSDrawSrcTxtCtrl(wxWindow *parent, ASSDrawFrame *frame);
 
-	void CustomOnChar(wxKeyEvent &event);
-	void CustomOnText(wxCommandEvent &event);
+	void CustomOnChar(wxKeyEvent& event);
+	void CustomOnText(wxCommandEvent& WXUNUSED(event));
 
 protected:
 	ASSDrawFrame *m_frame;
@@ -56,7 +56,7 @@ class ASSDrawTransformDlg : public wxDialog
 public:
 	ASSDrawTransformDlg(ASSDrawFrame* parent);
 
-	void OnTemplatesCombo(wxCommandEvent &event);
+	void OnTemplatesCombo(wxCommandEvent& event);
 	void EndModal(int retCode);
 
 	ASSDrawFrame* m_frame;

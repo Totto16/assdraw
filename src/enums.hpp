@@ -73,35 +73,35 @@ enum {
 // also use as tools IDs
 enum MODE
 {
-    MODE_ARR = 100,
-    MODE_M = 101,
-    MODE_N = 102,
-    MODE_L = 103,
-    MODE_B = 104,
-    MODE_S = 105,
-    MODE_P = 106,
-    MODE_C = 107,
-    MODE_DEL = 108,
+	MODE_ARR = 100,
+	MODE_M = 101,
+	MODE_N = 102,
+	MODE_L = 103,
+	MODE_B = 104,
+	MODE_S = 105,
+	MODE_P = 106,
+	MODE_C = 107,
+	MODE_DEL = 108,
 	MODE_SCALEROTATE = 109,
 	MODE_NUT_BILINEAR = 110
 };
 
 // enum for IDs of other tools on the toolbar
 enum {
-     TB_CLEAR = 111,
-     TB_EDITSRC = 112,
-     TB_PREVIEW = 113,
-     TB_TRANSFORM = 114,
-     TB_HELP = 115,
-     TB_ZOOMSLIDER = 116,
-     TB_BGALPHA_SLIDER = 117
+	 TB_CLEAR = 111,
+	 TB_EDITSRC = 112,
+	 TB_PREVIEW = 113,
+	 TB_TRANSFORM = 114,
+	 TB_HELP = 115,
+	 TB_ZOOMSLIDER = 116,
+	 TB_BGALPHA_SLIDER = 117
 };
 
 enum DRAGMODETOOL
 {
-    DRAG_DWG = 120,
-    DRAG_BGIMG = 121,
-    DRAG_BOTH = 122
+	DRAG_DWG = 120,
+	DRAG_BGIMG = 121,
+	DRAG_BOTH = 122
 };
 
 struct DRAGMODE

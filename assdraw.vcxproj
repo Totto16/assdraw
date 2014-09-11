@@ -17,17 +17,14 @@
     <ClInclude Include="src\wxAGG\AGGWindow.h" />
     <ClInclude Include="src\wxAGG\PixelFormatConvertor.h" />
     <ClInclude Include="src\_common.hpp" />
-    <ClInclude Include="src\agghelper.hpp" />
     <ClInclude Include="src\assdraw.hpp" />
     <ClInclude Include="src\canvas.hpp" />
     <ClInclude Include="src\canvas_mouse.hpp" />
-    <ClInclude Include="src\cmd.hpp" />
     <ClInclude Include="src\dlgctrl.hpp" />
     <ClInclude Include="src\engine.hpp" />
     <ClInclude Include="src\enums.hpp" />
     <ClInclude Include="src\include_once.hpp" />
     <ClInclude Include="src\library.hpp" />
-    <ClInclude Include="src\resource.h" />
     <ClInclude Include="src\settings.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -38,7 +35,6 @@
     <ClCompile Include="src\assdraw_settings.cpp" />
     <ClCompile Include="src\canvas.cpp" />
     <ClCompile Include="src\canvas_mouse.cpp" />
-    <ClCompile Include="src\cmd.cpp" />
     <ClCompile Include="src\dlgctrl.cpp" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\library.cpp" />

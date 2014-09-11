@@ -35,7 +35,7 @@
 #endif
 
 BEGIN_EVENT_TABLE(ASSDrawShapePreview, ASSDrawEngine)
-    EVT_SIZE(ASSDrawShapePreview::OnSize)
+	EVT_SIZE(ASSDrawShapePreview::OnSize)
 END_EVENT_TABLE()
 
 ASSDrawShapePreview::ASSDrawShapePreview( wxWindow *parent, ASSDrawShapeLibrary *_shapelib, wxString initialcmds )
@@ -60,11 +60,11 @@ void ASSDrawShapePreview::OnSize(wxSizeEvent& event)
 }
 
 BEGIN_EVENT_TABLE(ASSDrawShapeLibrary, wxScrolledWindow)
-    EVT_SIZE(ASSDrawShapeLibrary::OnSize)
-    EVT_MENU_RANGE(MENU_RANGE_START, MENU_RANGE_END, ASSDrawShapeLibrary::OnPopupMenuClicked)
-    EVT_TOOL(TOOL_SAVE, ASSDrawShapeLibrary::SaveShapeFromCanvas)
-    EVT_TOOL_RANGE(TOOL_CHECK, TOOL_UNCHECK, ASSDrawShapeLibrary::CheckUncheckAllPreviews)
-    EVT_TOOL(TOOL_DELETE, ASSDrawShapeLibrary::DeleteChecked)
+	EVT_SIZE(ASSDrawShapeLibrary::OnSize)
+	EVT_MENU_RANGE(MENU_RANGE_START, MENU_RANGE_END, ASSDrawShapeLibrary::OnPopupMenuClicked)
+	EVT_TOOL(TOOL_SAVE, ASSDrawShapeLibrary::SaveShapeFromCanvas)
+	EVT_TOOL_RANGE(TOOL_CHECK, TOOL_UNCHECK, ASSDrawShapeLibrary::CheckUncheckAllPreviews)
+	EVT_TOOL(TOOL_DELETE, ASSDrawShapeLibrary::DeleteChecked)
 END_EVENT_TABLE()
 
 ASSDrawShapeLibrary::ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame )

@@ -33,10 +33,10 @@
 // Licence:     3-clause BSD
 ///////////////////////////////////////////////////////////////////////////////
 
-
 #include "assdraw.hpp"
 #include "enums.hpp"
 #include "include_once.hpp"
+
 #include <wx/clipbrd.h>
 #include <wx/wfstream.h>
 #include <wx/filename.h>
@@ -69,29 +69,29 @@
 IMPLEMENT_APP(ASSDrawApp)
 
 BEGIN_EVENT_TABLE(ASSDrawFrame, wxFrame)
-    EVT_TOOL(TB_CLEAR, ASSDrawFrame::OnSelect_Clear)
-    EVT_TOOL(TB_PREVIEW, ASSDrawFrame::OnSelect_Preview)
-    EVT_TOOL(TB_TRANSFORM, ASSDrawFrame::OnSelect_Transform)
-    EVT_TOOL_RANGE(MODE_ARR, MODE_DEL, ASSDrawFrame::OnChoose_Mode)
-    EVT_TOOL_RCLICKED(wxID_ANY, ASSDrawFrame::OnToolRClick)
-    EVT_COMMAND(wxID_ANY, wxEVT_SETTINGS_CHANGED, ASSDrawFrame::OnSettingsChanged)
-    EVT_MENU_RANGE(MENU_TB_ALL, MENU_TB_BGIMG, ASSDrawFrame::OnChoose_TBarRClickMenu)
-    EVT_MENU(MENU_CLEAR, ASSDrawFrame::OnSelect_Clear)
-    EVT_MENU(MENU_PREVIEW, ASSDrawFrame::OnSelect_Preview)
-    EVT_MENU(MENU_TRANSFORM, ASSDrawFrame::OnSelect_Transform)
-    EVT_MENU(MENU_LIBRARY, ASSDrawFrame::OnSelect_Library)
-    EVT_MENU(MENU_SETTINGS, ASSDrawFrame::OnSelect_Settings)
-    EVT_MENU(MENU_RESETPERSPECTIVE, ASSDrawFrame::OnSelect_ResetPerspective)
-    EVT_MENU(MENU_HELP, ASSDrawFrame::OnSelect_Help)
-    EVT_MENU(wxID_ABOUT, ASSDrawFrame::OnSelect_About)
-    EVT_MENU(MENU_UNDO, ASSDrawFrame::OnSelect_Undo)
-    EVT_MENU(MENU_REDO, ASSDrawFrame::OnSelect_Redo)
-    EVT_MENU(MENU_PASTE, ASSDrawFrame::OnSelect_Paste)
-    EVT_MENU(MENU_BGIMG_REMOVE, ASSDrawFrame::OnSelect_RemoveBG)
-    EVT_MENU(MENU_BGIMG_ALPHA, ASSDrawFrame::OnSelect_AlphaBG)
-    EVT_MENU_RANGE(MODE_ARR, MODE_NUT_BILINEAR, ASSDrawFrame::OnChoose_Mode)
-    EVT_MENU_RANGE(MENU_REPOS_TOPLEFT, MENU_REPOS_BOTRIGHT, ASSDrawFrame::OnChoose_Recenter)
-    EVT_MENU_RANGE(MENU_REPOS_BGTOPLEFT, MENU_REPOS_BGBOTRIGHT, ASSDrawFrame::OnChoose_RecenterToBG)
+	EVT_TOOL(TB_CLEAR, ASSDrawFrame::OnSelect_Clear)
+	EVT_TOOL(TB_PREVIEW, ASSDrawFrame::OnSelect_Preview)
+	EVT_TOOL(TB_TRANSFORM, ASSDrawFrame::OnSelect_Transform)
+	EVT_TOOL_RANGE(MODE_ARR, MODE_DEL, ASSDrawFrame::OnChoose_Mode)
+	EVT_TOOL_RCLICKED(wxID_ANY, ASSDrawFrame::OnToolRClick)
+	EVT_COMMAND(wxID_ANY, wxEVT_SETTINGS_CHANGED, ASSDrawFrame::OnSettingsChanged)
+	EVT_MENU_RANGE(MENU_TB_ALL, MENU_TB_BGIMG, ASSDrawFrame::OnChoose_TBarRClickMenu)
+	EVT_MENU(MENU_CLEAR, ASSDrawFrame::OnSelect_Clear)
+	EVT_MENU(MENU_PREVIEW, ASSDrawFrame::OnSelect_Preview)
+	EVT_MENU(MENU_TRANSFORM, ASSDrawFrame::OnSelect_Transform)
+	EVT_MENU(MENU_LIBRARY, ASSDrawFrame::OnSelect_Library)
+	EVT_MENU(MENU_SETTINGS, ASSDrawFrame::OnSelect_Settings)
+	EVT_MENU(MENU_RESETPERSPECTIVE, ASSDrawFrame::OnSelect_ResetPerspective)
+	EVT_MENU(MENU_HELP, ASSDrawFrame::OnSelect_Help)
+	EVT_MENU(wxID_ABOUT, ASSDrawFrame::OnSelect_About)
+	EVT_MENU(MENU_UNDO, ASSDrawFrame::OnSelect_Undo)
+	EVT_MENU(MENU_REDO, ASSDrawFrame::OnSelect_Redo)
+	EVT_MENU(MENU_PASTE, ASSDrawFrame::OnSelect_Paste)
+	EVT_MENU(MENU_BGIMG_REMOVE, ASSDrawFrame::OnSelect_RemoveBG)
+	EVT_MENU(MENU_BGIMG_ALPHA, ASSDrawFrame::OnSelect_AlphaBG)
+	EVT_MENU_RANGE(MODE_ARR, MODE_NUT_BILINEAR, ASSDrawFrame::OnChoose_Mode)
+	EVT_MENU_RANGE(MENU_REPOS_TOPLEFT, MENU_REPOS_BOTRIGHT, ASSDrawFrame::OnChoose_Recenter)
+	EVT_MENU_RANGE(MENU_REPOS_BGTOPLEFT, MENU_REPOS_BGBOTRIGHT, ASSDrawFrame::OnChoose_RecenterToBG)
 	EVT_CLOSE(ASSDrawFrame::OnClose)
 END_EVENT_TABLE()
 
@@ -103,10 +103,10 @@ END_EVENT_TABLE()
 bool ASSDrawApp::OnInit()
 {
 	SetAppName(TITLE);
-    // create the main application window
-    ASSDrawFrame * assdrawframe = new ASSDrawFrame( this, TITLE, wxDefaultPosition, wxSize(640, 480) );
+	// create the main application window
+	ASSDrawFrame * assdrawframe = new ASSDrawFrame( this, TITLE, wxDefaultPosition, wxSize(640, 480) );
 	SetTopWindow(assdrawframe);
-    return TRUE;
+	return TRUE;
 }
 
 
@@ -118,24 +118,24 @@ bool ASSDrawApp::OnInit()
 // constructor
 
 ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
-       : wxFrame(NULL, wxID_ANY, title, pos, size, style)
+	   : wxFrame(NULL, wxID_ANY, title, pos, size, style)
 {
 	m_app = app;
-    m_mgr.SetManagedWindow(this);
+	m_mgr.SetManagedWindow(this);
 #ifndef __UNIX__
-    m_mgr.SetFlags(m_mgr.GetFlags() | wxAUI_MGR_ALLOW_ACTIVE_PANE);
+	m_mgr.SetFlags(m_mgr.GetFlags() | wxAUI_MGR_ALLOW_ACTIVE_PANE);
 #else
 	m_mgr.SetFlags(wxAUI_MGR_ALLOW_FLOATING | wxAUI_MGR_ALLOW_ACTIVE_PANE | wxAUI_MGR_RECTANGLE_HINT);
 #endif
 
-    // set the frame icon
-    SetIcon(wxICON(appico));
+	// set the frame icon
+	SetIcon(wxICON(appico));
 
    	// Create status bar for the frame
-    CreateStatusBar(3);
-    int statwidths[] = { 64, -1, 64 };
-    GetStatusBar()->SetStatusWidths(3, statwidths);
-    SetStatusBarPane(1);
+	CreateStatusBar(3);
+	int statwidths[] = { 64, -1, 64 };
+	GetStatusBar()->SetStatusWidths(3, statwidths);
+	SetStatusBarPane(1);
 
 	InitializeDefaultSettings();
 
@@ -160,7 +160,7 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
 	LoadSettings();
 
 	// THE CANVAS
-    m_canvas = new ASSDrawCanvas( this , this );
+	m_canvas = new ASSDrawCanvas( this , this );
 
 	// shapes library
 	shapelib = new ASSDrawShapeLibrary(this, this);
@@ -200,7 +200,7 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
 	}
 	config->SetPath(_T(".."));
 
-    m_mgr.Update();
+	m_mgr.Update();
 	m_canvas->SetFocus();
 	m_canvas->Show();
 
@@ -223,11 +223,11 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
 
 void ASSDrawFrame::SetToolBars()
 {
-    drawtbar = new wxToolBar(this, wxID_ANY, __DPDS__ , wxTB_FLAT | wxTB_TEXT | wxTB_NODIVIDER | wxTB_HORIZONTAL);
+	drawtbar = new wxToolBar(this, wxID_ANY, __DPDS__ , wxTB_FLAT | wxTB_TEXT | wxTB_NODIVIDER | wxTB_HORIZONTAL);
 	drawtbar->AddTool(TB_CLEAR, _T("Clear"), wxBITMAP(new_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_CLEAR);
-    //tbar->AddTool(TB_EDITSRC, _T("Source"), wxBITMAP(src_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_EDITSRC);
-    drawtbar->AddCheckTool(TB_PREVIEW, _T("Preview"), wxBITMAP(preview_), wxNullBitmap, _T(""), TIPS_PREVIEW);
-    //drawtbar->AddTool(TB_TRANSFORM, _T("Transform"), wxBITMAP(rot_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_TRANSFORM);
+	//tbar->AddTool(TB_EDITSRC, _T("Source"), wxBITMAP(src_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_EDITSRC);
+	drawtbar->AddCheckTool(TB_PREVIEW, _T("Preview"), wxBITMAP(preview_), wxNullBitmap, _T(""), TIPS_PREVIEW);
+	//drawtbar->AddTool(TB_TRANSFORM, _T("Transform"), wxBITMAP(rot_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_TRANSFORM);
 	zoomslider = new wxSlider(drawtbar, TB_ZOOMSLIDER, 1000, 100, 5000, __DPDS__ );
 	//zoomslider->SetSize(280, zoomslider->GetSize().y);
 	zoomslider->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ASSDrawFrame::OnZoomSliderChanged), NULL, this);
@@ -237,38 +237,38 @@ void ASSDrawFrame::SetToolBars()
 	zoomslider->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ASSDrawFrame::OnZoomSliderChanged), NULL, this);
 	zoomslider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ASSDrawFrame::OnZoomSliderChanged), NULL, this);
 	drawtbar->AddControl(zoomslider);
-    drawtbar->Realize();
+	drawtbar->Realize();
 
-    m_mgr.AddPane(drawtbar, wxAuiPaneInfo().Name(_T("drawtbar")).Caption(TBNAME_DRAW).
-                  ToolbarPane().Top().Position(0).Dockable(true).LeftDockable(false).RightDockable(false));
+	m_mgr.AddPane(drawtbar, wxAuiPaneInfo().Name(_T("drawtbar")).Caption(TBNAME_DRAW).
+				  ToolbarPane().Top().Position(0).Dockable(true).LeftDockable(false).RightDockable(false));
 
-    modetbar = new wxToolBar(this, wxID_ANY, __DPDS__ , wxTB_FLAT | wxTB_TEXT | wxTB_NODIVIDER | wxTB_HORIZONTAL);
-    modetbar->AddRadioTool(MODE_ARR, _T("Drag"), wxBITMAP(arr_), wxNullBitmap, _T(""), TIPS_ARR);
-    modetbar->AddRadioTool(MODE_M, _T("Move"), wxBITMAP(m_), wxNullBitmap, _T(""), TIPS_M);
-    //modetbar->AddRadioTool(MODE_N, _T("Move*"), wxBITMAP(n_), wxNullBitmap, _T(""), TIPS_N);
-    modetbar->AddRadioTool(MODE_L, _T("Line"), wxBITMAP(l_), wxNullBitmap, _T(""), TIPS_L);
-    modetbar->AddRadioTool(MODE_B, _T("Bezier"), wxBITMAP(b_), wxNullBitmap, _T(""), TIPS_B);
-    //modetbar->AddRadioTool(MODE_S, _T("Spline"), wxBITMAP(s_), wxNullBitmap, _T(""), TIPS_S);
-    //modetbar->AddRadioTool(MODE_P, _T("Extend"), wxBITMAP(p_), wxNullBitmap, _T(""), TIPS_P);
-    //modetbar->AddRadioTool(MODE_C, _T("Close"), wxBITMAP(c_), wxNullBitmap, _T(""), TIPS_C);
-    modetbar->AddRadioTool(MODE_DEL, _T("Delete"), wxBITMAP(del_), wxNullBitmap, _T(""), TIPS_DEL);
-    modetbar->AddRadioTool(MODE_SCALEROTATE, _T("Scale/Rotate"), wxBITMAP(sc_rot_), wxNullBitmap, _T(""), TIPS_SCALEROTATE);
-    modetbar->AddRadioTool(MODE_NUT_BILINEAR, _T("Bilinear"), wxBITMAP(nut_), wxNullBitmap, _T(""), TIPS_NUTB);
-    //modetbar->AddRadioTool(MODE_NUT_PERSPECTIVE, _T("NUT:P"), wxBITMAP(arr_), wxNullBitmap, _T(""), _T(""));
-    modetbar->Realize();
+	modetbar = new wxToolBar(this, wxID_ANY, __DPDS__ , wxTB_FLAT | wxTB_TEXT | wxTB_NODIVIDER | wxTB_HORIZONTAL);
+	modetbar->AddRadioTool(MODE_ARR, _T("Drag"), wxBITMAP(arr_), wxNullBitmap, _T(""), TIPS_ARR);
+	modetbar->AddRadioTool(MODE_M, _T("Move"), wxBITMAP(m_), wxNullBitmap, _T(""), TIPS_M);
+	//modetbar->AddRadioTool(MODE_N, _T("Move*"), wxBITMAP(n_), wxNullBitmap, _T(""), TIPS_N);
+	modetbar->AddRadioTool(MODE_L, _T("Line"), wxBITMAP(l_), wxNullBitmap, _T(""), TIPS_L);
+	modetbar->AddRadioTool(MODE_B, _T("Bezier"), wxBITMAP(b_), wxNullBitmap, _T(""), TIPS_B);
+	//modetbar->AddRadioTool(MODE_S, _T("Spline"), wxBITMAP(s_), wxNullBitmap, _T(""), TIPS_S);
+	//modetbar->AddRadioTool(MODE_P, _T("Extend"), wxBITMAP(p_), wxNullBitmap, _T(""), TIPS_P);
+	//modetbar->AddRadioTool(MODE_C, _T("Close"), wxBITMAP(c_), wxNullBitmap, _T(""), TIPS_C);
+	modetbar->AddRadioTool(MODE_DEL, _T("Delete"), wxBITMAP(del_), wxNullBitmap, _T(""), TIPS_DEL);
+	modetbar->AddRadioTool(MODE_SCALEROTATE, _T("Scale/Rotate"), wxBITMAP(sc_rot_), wxNullBitmap, _T(""), TIPS_SCALEROTATE);
+	modetbar->AddRadioTool(MODE_NUT_BILINEAR, _T("Bilinear"), wxBITMAP(nut_), wxNullBitmap, _T(""), TIPS_NUTB);
+	//modetbar->AddRadioTool(MODE_NUT_PERSPECTIVE, _T("NUT:P"), wxBITMAP(arr_), wxNullBitmap, _T(""), _T(""));
+	modetbar->Realize();
 
-    m_mgr.AddPane(modetbar, wxAuiPaneInfo().Name(_T("modetbar")).Caption(TBNAME_MODE).
-                  ToolbarPane().Top().Position(1).Dockable(true).LeftDockable(false).RightDockable(false));
+	m_mgr.AddPane(modetbar, wxAuiPaneInfo().Name(_T("modetbar")).Caption(TBNAME_MODE).
+				  ToolbarPane().Top().Position(1).Dockable(true).LeftDockable(false).RightDockable(false));
 
-    bgimgtbar = new wxToolBar(this, wxID_ANY, __DPDS__ , wxTB_FLAT | wxTB_TEXT | wxTB_NODIVIDER | wxTB_HORIZONTAL);
+	bgimgtbar = new wxToolBar(this, wxID_ANY, __DPDS__ , wxTB_FLAT | wxTB_TEXT | wxTB_NODIVIDER | wxTB_HORIZONTAL);
 	bgimgtbar->SetToolBitmapSize(wxSize(24,15));
-    bgimgtbar->AddCheckTool(DRAG_DWG, _T("Pan drawing"), wxBITMAP(pan_shp), wxNullBitmap, _T(""), TIPS_DWG);
-    bgimgtbar->AddCheckTool(DRAG_BGIMG, _T("Pan background"), wxBITMAP(pan_bg), wxNullBitmap, _T(""), TIPS_BGIMG);
-    //bgimgtbar->AddRadioTool(DRAG_BOTH, _T("Pan both"), wxBITMAP(pan_both), wxNullBitmap, _T(""), TIPS_BOTH);
-    bgimgtbar->Realize();
+	bgimgtbar->AddCheckTool(DRAG_DWG, _T("Pan drawing"), wxBITMAP(pan_shp), wxNullBitmap, _T(""), TIPS_DWG);
+	bgimgtbar->AddCheckTool(DRAG_BGIMG, _T("Pan background"), wxBITMAP(pan_bg), wxNullBitmap, _T(""), TIPS_BGIMG);
+	//bgimgtbar->AddRadioTool(DRAG_BOTH, _T("Pan both"), wxBITMAP(pan_both), wxNullBitmap, _T(""), TIPS_BOTH);
+	bgimgtbar->Realize();
 
-    m_mgr.AddPane(bgimgtbar, wxAuiPaneInfo().Name(_T("bgimgtbar")).Caption(TBNAME_BGIMG).
-                  ToolbarPane().Top().Position(2).Dockable(true).LeftDockable(false).RightDockable(false));
+	m_mgr.AddPane(bgimgtbar, wxAuiPaneInfo().Name(_T("bgimgtbar")).Caption(TBNAME_BGIMG).
+				  ToolbarPane().Top().Position(2).Dockable(true).LeftDockable(false).RightDockable(false));
 
 }
 
@@ -353,16 +353,16 @@ void ASSDrawFrame::SetMenus()
 void ASSDrawFrame::SetPanes()
 {
 	m_mgr.AddPane(shapelib, wxAuiPaneInfo().Name(_T("library")).Caption(_T("Shapes Library")).
-                  Right().Layer(2).Position(0).CloseButton(true).BestSize(wxSize(120, 480)).MinSize(wxSize(100, 200)));
+				  Right().Layer(2).Position(0).CloseButton(true).BestSize(wxSize(120, 480)).MinSize(wxSize(100, 200)));
 
 	m_mgr.AddPane(m_canvas, wxAuiPaneInfo().Name(_T("canvas")).CenterPane());
 
 	m_mgr.AddPane(srctxtctrl, wxAuiPaneInfo().Name(_T("commands")).Caption(_T("Drawing commands")).
-                  Bottom().Layer(1).CloseButton(false).BestSize(wxSize(320, 48)));
+				  Bottom().Layer(1).CloseButton(false).BestSize(wxSize(320, 48)));
 
 	if (settingsdlg)
 		m_mgr.AddPane(settingsdlg, wxAuiPaneInfo().Name(_T("settings")).Caption(_T("Settings")).
-                  Right().Layer(3).Position(0).CloseButton(true).BestSize(wxSize(240, 480)).MinSize(wxSize(200, 200)).Show(false));
+				  Right().Layer(3).Position(0).CloseButton(true).BestSize(wxSize(240, 480)).MinSize(wxSize(200, 200)).Show(false));
 }
 
 ASSDrawFrame::~ASSDrawFrame()
@@ -400,13 +400,13 @@ ASSDrawFrame::~ASSDrawFrame()
 void ASSDrawFrame::_Clear()
 {
 	wxMessageDialog msgb(this, _T("Clear the canvas and create a new drawing?"),
-                  _T("Confirmation"), wxOK | wxCANCEL | wxICON_QUESTION );
+				  _T("Confirmation"), wxOK | wxCANCEL | wxICON_QUESTION );
 	if (msgb.ShowModal() == wxID_OK)
 	{
 		m_canvas->RefreshUndocmds();
 		m_canvas->AddUndo(_T("Clear canvas"));
 		m_canvas->ResetEngine(true);
-	    wxSize siz = m_canvas->GetClientSize();
+		wxSize siz = m_canvas->GetClientSize();
 		m_canvas->ChangeZoomLevelTo(DEFAULT_SCALE, wxPoint(siz.x / 2, siz.y / 2));
 		m_canvas->MoveCanvasOriginTo(siz.x / 2, siz.y / 2);
 		UpdateUndoRedoMenu();
@@ -629,10 +629,12 @@ void ASSDrawFrame::OnChoose_TBarRClickMenu(wxCommandEvent& event)
 			if (show[0])
 				m_mgr.GetPane(tbar[i]).Show(show[1]);
 			if (dock[0])
+			{
 				if (dock[1])
 					m_mgr.GetPane(tbar[i]).Dock();
 				else
 					m_mgr.GetPane(tbar[i]).Float();
+			}
 		}
 	}
 	m_mgr.Update();

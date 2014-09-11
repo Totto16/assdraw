@@ -33,17 +33,18 @@
 // Licence:     3-clause BSD
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "assdraw.hpp"
-#include "agg_gsv_text.h"
-#include "agg_ellipse.h"
-#include "agg_conv_dash.h"
-#include "agg_trans_bilinear.h"
-#include "agg_trans_perspective.h"
-
-#include "agghelper.hpp"
 #include <math.h>
+
+#include "assdraw.hpp"
+
 #include <wx/image.h>
 #include <wx/filename.h>
+
+#include "agg_math.h"
+#include "agg_gsv_text.h"
+#include "agg_ellipse.h"
+#include "agg_conv_clip_polygon.h"
+#include "agg_trans_bilinear.h"
 
 // ----------------------------------------------------------------------------
 // the main drawing canvas: ASSDrawCanvas
@@ -227,8 +228,9 @@ void ASSDrawCanvas::SetDrawMode( MODE mode )
 
 			// calculate bounding rectangle
 			agg::trans_affine mtx;
-			trans_path *rm, *rb;
-			agg::conv_curve<trans_path> *rc;
+			ConvTransAffine *rm;
+			ConvTransAffine *rb;
+			ConvCurveTransAffine *rc;
 			ConstructPathsAndCurves(mtx, rm, rb, rc);
 			rasterizer.reset();
 			rasterizer.add_path(*rc);
@@ -754,7 +756,7 @@ void ASSDrawCanvas::OnMouseLeftDown(wxMouseEvent& event)
 			else
 			{
 				if (cmds.empty() && newcommand->type != M)
-					AppendCmd( M, px, py );
+					AppendCmd(NewCmd(M, px, py));
 				newcommand = AppendCmd( newcommand );
 			}
 
@@ -1283,9 +1285,9 @@ SELECTMODE ASSDrawCanvas::GetSelectMode(wxMouseEvent& event)
 	return smode;
 }
 
-void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, RendererSolid& rsolid, agg::trans_affine& mtx )
+void ASSDrawCanvas::DoDraw(RendererBase& rbase, RendererPrimitives& rprim, RendererSolid& rsolid, agg::trans_affine& mtx)
 {
-	Draw_Clear( rbase );
+	Draw_Clear(rbase);
 	int ww, hh; GetClientSize(&ww, &hh);
 
 	if (bgimg.bgbmp)
@@ -1294,14 +1296,14 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 		interpolator_type interpolator(bgimg.img_mtx);
 		PixelFormat::AGGType ipixfmt(bgimg.ibuf);
 		span_gen_type spangen(ipixfmt, agg::rgba_pre(0, 0, 0, 1), interpolator);
-		agg::conv_transform< agg::path_storage > bg_border(bgimg.bg_path, bgimg.path_mtx);
-		agg::conv_clip_polygon< agg::conv_transform< agg::path_storage > > bg_clip(bg_border);
+		ConvTrans bg_border(bgimg.bg_path, bgimg.path_mtx);
+		agg::conv_clip_polygon<ConvTrans> bg_clip(bg_border);
 		bg_clip.clip_box(0, 0, ww, hh);
 		rasterizer.add_path(bg_clip);
 		agg::render_scanlines_aa(rasterizer, scanline, rbase, bgimg.spanalloc, spangen);
 	}
 
-	Draw_Draw( rbase, rprim, rsolid, mtx, preview_mode? rgba_shape:rgba_shape_normal );
+	Draw_Draw(rbase, rprim, rsolid, mtx, preview_mode? rgba_shape:rgba_shape_normal);
 
 	if (!preview_mode)
 	{
@@ -1312,9 +1314,9 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 		org_path.line_to(0, -m_frame->sizes.origincross);
 		org_path.move_to(m_frame->sizes.origincross, 0);
 		org_path.line_to(-m_frame->sizes.origincross, 0);
-		agg::conv_transform< agg::path_storage > org_path_t(org_path, mtx);
-		agg::conv_curve< agg::conv_transform< agg::path_storage > > crosshair(org_path_t);
-		agg::conv_stroke< agg::conv_curve< agg::conv_transform< agg::path_storage > > > chstroke(crosshair);
+		ConvTransAffine org_path_t(org_path, mtx);
+		ConvCurveTransAffine crosshair(org_path_t);
+		agg::conv_stroke<ConvCurveTransAffine> chstroke(crosshair);
 		rasterizer.add_path(chstroke);
 		rsolid.color(rgba_origin);
 		render_scanlines(rsolid, false);
@@ -1331,10 +1333,10 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				org_path.line_to(rectcenter.x + len, rectcenter.y + len);
 				org_path.move_to(rectcenter.x + len, rectcenter.y - len);
 				org_path.line_to(rectcenter.x - len, rectcenter.y + len);
-				agg::conv_stroke< agg::path_storage > cstroke(org_path);
+				agg::conv_stroke<agg::path_storage> cstroke(org_path);
 				rasterizer.add_path(cstroke);
 				agg::ellipse circ(rectcenter.x, rectcenter.y, len, len);
-				agg::conv_stroke< agg::ellipse > c(circ);
+				agg::conv_stroke<agg::ellipse> c(circ);
 				rasterizer.add_path(c);
 				rsolid.color(rgba_origin);
 				render_scanlines(rsolid, false);
@@ -1353,15 +1355,13 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 			rasterizer.add_path(chstroke);
 			if (rectbound2upd != -1)
 			{
-				agg::ellipse circ(rectbound2[rectbound2upd].x, rectbound2[rectbound2upd].y,
-					pointsys->scale, pointsys->scale);
+				agg::ellipse circ(rectbound2[rectbound2upd].x, rectbound2[rectbound2upd].y, pointsys->scale, pointsys->scale);
 				agg::conv_contour< agg::ellipse > c(circ);
 				rasterizer.add_path(c);
 			}
 			if (rectbound2upd2 != -1)
 			{
-				agg::ellipse circ(rectbound2[rectbound2upd2].x, rectbound2[rectbound2upd2].y,
-					pointsys->scale, pointsys->scale);
+				agg::ellipse circ(rectbound2[rectbound2upd2].x, rectbound2[rectbound2upd2].y, pointsys->scale, pointsys->scale);
 				agg::conv_contour< agg::ellipse > c(circ);
 				rasterizer.add_path(c);
 			}
@@ -1370,13 +1370,13 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 		else
 		{
 			// outlines
-			agg::conv_stroke< agg::conv_transform< agg::path_storage > > bguidestroke(*rb_path);
+			agg::conv_stroke<ConvTrans> bguidestroke(*rb_path);
 			bguidestroke.width(1);
 			rsolid.color(rgba_guideline);
 			rasterizer.add_path(bguidestroke);
 			render_scanlines(rsolid);
 
-			agg::conv_stroke< agg::conv_curve< agg::conv_transform< agg::path_storage > > > stroke(*rm_curve);
+			agg::conv_stroke<ConvCurveTransAffine> stroke(*rm_curve);
 			stroke.width(1);
 			rsolid.color(rgba_outline);
 			rasterizer.add_path(stroke);
@@ -1390,11 +1390,11 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				rasterizer.reset();
 				agg::path_storage h_path;
 				AddDrawCmdToAGGPathStorage(hilite_cmd, h_path, HILITE);
-				agg::conv_transform< agg::path_storage> h_path_trans(h_path, mtx);
-				agg::conv_curve< agg::conv_transform< agg::path_storage> > curve(h_path_trans);
-				agg::conv_dash< agg::conv_curve< agg::conv_transform< agg::path_storage > > > d(curve);
+				ConvTransAffine h_path_trans(h_path, mtx);
+				ConvCurveTransAffine curve(h_path_trans);
+				ConvDashCurveTransAffine d(curve);
 				d.add_dash(10,5);
-				agg::conv_stroke< agg::conv_dash< agg::conv_curve< agg::conv_transform< agg::path_storage > > > > stroke(d);
+				agg::conv_stroke<ConvDashCurveTransAffine> stroke(d);
 				stroke.width(3);
 				rsolid.color(rgba_outline);
 				rasterizer.add_path(stroke);
@@ -1409,7 +1409,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				double lx = (*ci)->m_point->x() * pointsys->scale + pointsys->originx - radius;
 				double ty = (*ci)->m_point->y() * pointsys->scale + pointsys->originy - radius;
 				agg::path_storage sqp = agghelper::RectanglePath(lx, lx + diameter, ty, ty + diameter);
-				agg::conv_contour< agg::path_storage > c(sqp);
+				agg::conv_contour<agg::path_storage> c(sqp);
 				rasterizer.add_path(c);
 				ci++;
 			}
@@ -1423,9 +1423,8 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				PointList::iterator pi = (*ci)->controlpoints.begin();
 				while (pi != (*ci)->controlpoints.end())
 				{
-					agg::ellipse circ((*pi)->x() * pointsys->scale + pointsys->originx,
-						(*pi)->y() * pointsys->scale + pointsys->originy, radius, radius);
-					agg::conv_contour< agg::ellipse > c(circ);
+					agg::ellipse circ((*pi)->x() * pointsys->scale + pointsys->originx, (*pi)->y() * pointsys->scale + pointsys->originy, radius, radius);
+					agg::conv_contour<agg::ellipse> c(circ);
 					rasterizer.add_path(c);
 					pi++;
 				}
@@ -1438,9 +1437,8 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 			PointSet::iterator si = selected_points.begin();
 			while (si != selected_points.end())
 			{
-				agg::ellipse circ((*si)->x() * pointsys->scale + pointsys->originx,
-					(*si)->y() * pointsys->scale + pointsys->originy, radius + 3, radius + 3);
-				agg::conv_stroke< agg::ellipse > s(circ);
+				agg::ellipse circ((*si)->x() * pointsys->scale + pointsys->originx, (*si)->y() * pointsys->scale + pointsys->originy, radius + 3, radius + 3);
+				agg::conv_stroke<agg::ellipse> s(circ);
 				rasterizer.add_path(s);
 				si++;
 			}
@@ -1450,9 +1448,8 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 			if (hilite_point)
 			{
 				rasterizer.reset();
-				agg::ellipse circ(hilite_point->x() * pointsys->scale + pointsys->originx,
-					hilite_point->y() * pointsys->scale + pointsys->originy, radius + 3, radius + 3);
-				agg::conv_stroke< agg::ellipse > s(circ);
+				agg::ellipse circ(hilite_point->x() * pointsys->scale + pointsys->originx, hilite_point->y() * pointsys->scale + pointsys->originy, radius + 3, radius + 3);
+				agg::conv_stroke<agg::ellipse> s(circ);
 				s.width(2);
 				rasterizer.add_path(s);
 				render_scanlines_aa_solid(rbase, rgba_selectpoint);
@@ -1464,7 +1461,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				wxPoint pxy = hilite_point->ToWxPoint(true);
 				t.start_point(pxy.x + 5, pxy.y -5 );
 				t.text(wxString::Format(_T("%d,%d"), hilite_point->x(), hilite_point->y()).mb_str(wxConvUTF8));
-				agg::conv_stroke< agg::gsv_text > pt(t);
+				agg::conv_stroke<agg::gsv_text> pt(t);
 				pt.line_cap(agg::round_cap);
 				pt.line_join(agg::round_join);
 				pt.width(1.5);
@@ -1478,10 +1475,10 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				sb_path.line_to(pxy.x, hh);
 				sb_path.move_to(0, pxy.y);
 				sb_path.line_to(ww, pxy.y);
-				agg::conv_curve< agg::path_storage > curve(sb_path);
-				agg::conv_dash< agg::conv_curve< agg::path_storage > > d(curve);
+				ConvCurve curve(sb_path);
+				ConvDashCurve d(curve);
 				d.add_dash(10,5);
-				agg::conv_stroke< agg::conv_dash< agg::conv_curve< agg::path_storage > > > stroke(d);
+				ConvStrokeDashCurve stroke(d);
 				stroke.width(1);
 				rsolid.color(agg::rgba(0,0,0,0.5));
 				rasterizer.add_path(stroke);
@@ -1500,10 +1497,10 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				else ty = y2, by = y1;
 				rasterizer.reset();
 				agg::path_storage sb_path = agghelper::RectanglePath(lx, rx, ty, by);
-				agg::conv_curve< agg::path_storage > curve(sb_path);
-				agg::conv_dash< agg::conv_curve< agg::path_storage > > d(curve);
+				ConvCurve curve(sb_path);
+				ConvDashCurve d(curve);
 				d.add_dash(10,5);
-				agg::conv_stroke< agg::conv_dash< agg::conv_curve< agg::path_storage > > > stroke(d);
+				ConvStrokeDashCurve stroke(d);
 				stroke.width(1.0);
 				rsolid.color(agg::rgba(0,0,0,0.5));
 				rasterizer.add_path(stroke);
@@ -1539,7 +1536,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				txt.size(6.0);
 				txt.start_point(s, 20);
 				txt.text(wxString::Format(_T("%d"), t).mb_str(wxConvUTF8));
-				agg::conv_stroke< agg::gsv_text > pt(txt);
+				agg::conv_stroke<agg::gsv_text> pt(txt);
 				rasterizer.add_path(pt);
 			}
 			else
@@ -1553,7 +1550,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				rlr_path.line_to(s, len);
 			}
 		}
-		agg::conv_stroke< agg::path_storage > rlr_stroke(rlr_path);
+		agg::conv_stroke<agg::path_storage> rlr_stroke(rlr_path);
 		rlr_stroke.width(1);
 		rasterizer.add_path(rlr_stroke);
 		render_scanlines(rsolid, false);
@@ -1579,7 +1576,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				txt.size(6.0);
 				txt.start_point(12, s);
 				txt.text(wxString::Format(_T("%d"), t).mb_str(wxConvUTF8));
-				agg::conv_stroke< agg::gsv_text > pt(txt);
+				agg::conv_stroke<agg::gsv_text> pt(txt);
 				rasterizer.add_path(pt);
 			}
 			else
@@ -1593,12 +1590,11 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				rlr_path.line_to(len, s);
 			}
 		}
-		agg::conv_stroke< agg::path_storage > rlr_stroke(rlr_path);
+		agg::conv_stroke<agg::path_storage> rlr_stroke(rlr_path);
 		rlr_stroke.width(1);
 		rasterizer.add_path(rlr_stroke);
 		render_scanlines(rsolid, false);
 	}
-
 }
 
 void ASSDrawCanvas::ReceiveBackgroundImageFileDropEvent(const wxString& filename)

@@ -28,10 +28,10 @@
 #pragma once
 
 #include "_common.hpp"
+#include <wx/event.h>
+
 #include "enums.hpp"
 #include "engine.hpp"
-
-#include <wx/event.h>
 
 struct MouseOnCanvasData
 {
@@ -39,14 +39,14 @@ struct MouseOnCanvasData
 	wxMouseEvent event;
 	enum { NONE, LEFT, RIGHT, BOTH } button;
 
-    Point* mousedownAt_point;
+	Point* mousedownAt_point;
 	Point* pointedAt_point;
 	Point* dblclicked_point_right;
 
 	wxPoint mouse_point;
-    wxPoint* dragAnchor_left;
+	wxPoint* dragAnchor_left;
 	wxPoint* lastDrag_left;
-    wxPoint* dragAnchor_right;
+	wxPoint* dragAnchor_right;
 	wxPoint* lastDrag_right;
 };
 
@@ -56,13 +56,13 @@ class ASSDrawMouseOnCanvasEvent : public wxNotifyEvent
 {
 public:
 	ASSDrawMouseOnCanvasEvent(const ASSDrawCanvas* canvas);
-	
+
 	wxEvent* Clone();
-	
+
 	void SetData(MouseOnCanvasData *data);
-	
+
 	MouseOnCanvasData* GetData();
-	
+
 private:
 	const ASSDrawCanvas* _canvas;
 	MouseOnCanvasData* _data;
@@ -74,12 +74,12 @@ DECLARE_EVENT_TYPE( wxEVT_MOUSEONCANVAS, -1 )
 typedef void (wxEvtHandler::*wxMouseOnCanvasEventFunction)(ASSDrawMouseOnCanvasEvent&);
 
 #define EVT_MOUSEONCANVAS(fn) \
-    DECLARE_EVENT_TABLE_ENTRY( wxEVT_MOUSEONCANVAS, -1, -1, \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( wxMouseOnCanvasEventFunction, & fn ), (wxObject *) NULL ),
+	DECLARE_EVENT_TABLE_ENTRY( wxEVT_MOUSEONCANVAS, -1, -1, \
+	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+	wxStaticCastEvent( wxMouseOnCanvasEventFunction, & fn ), (wxObject *) NULL ),
 
 class ASSDrawMouseOnCanvasHandler
 {
-	
-	
+
+
 };

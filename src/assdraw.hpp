@@ -37,9 +37,9 @@
 
 #pragma once
 
-#include "_common.hpp"
-
 #include <vector>
+
+#include "_common.hpp"
 #include <wx/wxprec.h>
 #include <wx/aui/aui.h>
 #include <wx/fileconf.h>
@@ -54,9 +54,9 @@
 #define VERSION _T("3.0 final")
 #endif
 
-class ASSDrawApp : public wxApp 
-{ 
-public:      
+class ASSDrawApp : public wxApp
+{
+public:
 	bool OnInit();
 };
 
@@ -142,7 +142,7 @@ public:
 #endif
 
 	// dialogs
-	ASSDrawTransformDlg* transformdlg;	
+	ASSDrawTransformDlg* transformdlg;
 	ASSDrawSettingsDialog* settingsdlg;
 
 	// colors

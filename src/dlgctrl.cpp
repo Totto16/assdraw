@@ -56,7 +56,7 @@ ASSDrawSrcTxtCtrl::ASSDrawSrcTxtCtrl(wxWindow *parent, ASSDrawFrame *frame) : wx
 	m_frame = frame;
 }
 
-void ASSDrawSrcTxtCtrl::CustomOnChar(wxKeyEvent &event)
+void ASSDrawSrcTxtCtrl::CustomOnChar(wxKeyEvent& event)
 {
 	switch (event.GetKeyCode())
 	{
@@ -73,7 +73,7 @@ void ASSDrawSrcTxtCtrl::CustomOnChar(wxKeyEvent &event)
 	//SetBackgroundColour(IsModified()? wxColour(0xFF, 0xFF, 0x99):*wxWHITE);
 }
 
-void ASSDrawSrcTxtCtrl::CustomOnText(wxCommandEvent &event)
+void ASSDrawSrcTxtCtrl::CustomOnText(wxCommandEvent& WXUNUSED(event))
 {
 	//SetBackgroundColour(IsModified()? wxColour(0xFF, 0xFF, 0x99):*wxWHITE);
 }
