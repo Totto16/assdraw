@@ -265,7 +265,7 @@ public:
 	virtual void OnPaint(wxPaintEvent &event);
 
 	// -------------------- adding new commands ----------------------------
-	virtual DrawCmd* AppendCmd(CMDTYPE type, int x, int y) { return AppendCmd( NewCmd( type, x, y ) ); }
+	virtual DrawCmd* AppendCmd(CMDTYPE type, int x, int y) { return AppendCmd(NewCmd(type, x, y)); }
 	virtual DrawCmd* AppendCmd(DrawCmd* cmd);
 
 	// create draw command of type 'type' and m_point (x, y), insert to the list after the _cmd and return it

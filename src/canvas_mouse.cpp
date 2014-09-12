@@ -28,12 +28,10 @@
 #include "canvas_mouse.hpp"
 #include "canvas.hpp"
 
-DEFINE_EVENT_TYPE( wxEVT_MOUSEONCANVAS )
+DEFINE_EVENT_TYPE(wxEVT_MOUSEONCANVAS)
 
 
-ASSDrawMouseOnCanvasEvent::ASSDrawMouseOnCanvasEvent(const ASSDrawCanvas* canvas)
- : wxNotifyEvent(),
-   _canvas(canvas)
+ASSDrawMouseOnCanvasEvent::ASSDrawMouseOnCanvasEvent(const ASSDrawCanvas* canvas) : wxNotifyEvent(), _canvas(canvas)
 {
 	_data = NULL;
 }

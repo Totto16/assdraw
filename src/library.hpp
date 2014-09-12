@@ -52,7 +52,7 @@ enum {
 class ASSDrawShapePreview : public ASSDrawEngine
 {
 protected:
-	ASSDrawShapePreview( wxWindow *parent, ASSDrawShapeLibrary *shapelib, wxString initialcmds = _T(""));
+	ASSDrawShapePreview(wxWindow *parent, ASSDrawShapeLibrary *shapelib, wxString initialcmds = _T(""));
 	virtual void OnSize(wxSizeEvent& event);
 
 	ASSDrawShapeLibrary *shapelib;
@@ -64,7 +64,7 @@ protected:
 class ASSDrawShapeLibrary : public wxScrolledWindow
 {
 public:
-	ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame );
+	ASSDrawShapeLibrary(wxWindow *parent, ASSDrawFrame *frame);
 	virtual ASSDrawShapePreview* AddShapePreview(wxString cmds, bool addtotop = false);
 	virtual void OnSize(wxSizeEvent& WXUNUSED(event));
 	virtual void OnMouseLeftDClick(wxMouseEvent &event);
@@ -74,7 +74,7 @@ public:
 	virtual void CheckUncheckAllPreviews(wxCommandEvent &event);
 	virtual void DeleteChecked(wxCommandEvent& WXUNUSED(event));
 	virtual void UpdatePreviewDisplays();
-	virtual std::vector< ASSDrawShapePreview *> GetShapePreviews();
+	virtual std::vector<ASSDrawShapePreview *> GetShapePreviews();
 	virtual void LoadToCanvas(ASSDrawShapePreview *preview);
 
 	wxScrolledWindow* libarea;

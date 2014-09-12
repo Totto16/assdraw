@@ -50,7 +50,7 @@ ASSDrawSettingsDialog::ASSDrawSettingsDialog(wxWindow *parent, ASSDrawFrame *fra
 
 void ASSDrawSettingsDialog::Init()
 {
-	propgrid = new wxPropertyGrid(this, wxID_ANY, __DPDS__ , wxPG_TOOLTIPS | wxTAB_TRAVERSAL);
+	propgrid = new wxPropertyGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxPG_TOOLTIPS | wxTAB_TRAVERSAL);
 
 	#define APPENDCOLOURPROP(pgid, label, color) pgid = propgrid->Append(new wxColourProperty(label, wxPG_LABEL, color));
 	#define APPENDUINTPROP(pgid, label, uint) \
@@ -175,7 +175,8 @@ void ASSDrawSettingsDialog::OnSettingsRevertButtonClicked(wxCommandEvent& WXUNUS
 
 void ASSDrawSettingsDialog::RefreshSettingsDisplay()
 {
-	if (propgrid == NULL) return;
+	if (propgrid == NULL)
+		return;
 
 	#define UPDATESETTING(value, pgid) propgrid->SetPropertyValue(pgid, value);
 

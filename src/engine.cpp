@@ -253,7 +253,7 @@ ASSDrawEngine::~ASSDrawEngine()
 }
 
 // parse ASS draw commands; returns the number of parsed commands
-int ASSDrawEngine::ParseASS ( wxString str )
+int ASSDrawEngine::ParseASS(wxString str)
 {
 	ResetEngine(false);
 	str.Replace(_T("\t"), _T(""));
@@ -532,7 +532,7 @@ DrawCmd* ASSDrawEngine::ControlAt(int x, int y, Point* &point)
 		end = (*cmd_iterator)->controlpoints.end();
 		for (; pnt_iterator != end; pnt_iterator++)
 		{
-			if ((*pnt_iterator)->IsAt( x, y ))
+			if ((*pnt_iterator)->IsAt(x, y))
 			{
 				c = (*cmd_iterator);
 				point = (*pnt_iterator);
@@ -558,7 +558,7 @@ bool ASSDrawEngine::DeleteCommand(DrawCmd* cmd)
 		if (cmd == (*iterate))
 		{
 			iterate++;
-			DrawCmd* nxt = (iterate != cmds.end()? (*iterate):NULL);
+			DrawCmd* nxt = (iterate != cmds.end()? (*iterate) : NULL);
 			ConnectSubsequentCmds(lastiter, nxt);
 			iterate--;
 			cmds.erase(iterate);
@@ -700,8 +700,10 @@ void ASSDrawEngine::AddDrawCmdToAGGPathStorage(DrawCmd* cmd, agg::path_storage& 
 		PointList::iterator iterate = cmd->controlpoints.begin();
 		while (iterate != cmd->controlpoints.end())
 		{
-			m_polygon[_pn] = (*iterate)->x(); _pn++;
-			m_polygon[_pn] = (*iterate)->y(); _pn++;
+			m_polygon[_pn] = (*iterate)->x();
+			_pn++;
+			m_polygon[_pn] = (*iterate)->y();
+			_pn++;
 			iterate++;
 		}
 		//m_polygon[_pn++] = cmd->m_point->x();

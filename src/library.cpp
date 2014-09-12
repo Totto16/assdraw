@@ -38,8 +38,7 @@ BEGIN_EVENT_TABLE(ASSDrawShapePreview, ASSDrawEngine)
 	EVT_SIZE(ASSDrawShapePreview::OnSize)
 END_EVENT_TABLE()
 
-ASSDrawShapePreview::ASSDrawShapePreview( wxWindow *parent, ASSDrawShapeLibrary *_shapelib, wxString initialcmds )
-	: ASSDrawEngine(parent, wxSIMPLE_BORDER)
+ASSDrawShapePreview::ASSDrawShapePreview(wxWindow *parent, ASSDrawShapeLibrary *_shapelib, wxString initialcmds) : ASSDrawEngine(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER)
 {
 	shapelib = _shapelib;
 	if (ParseASS(initialcmds) > 0)
@@ -67,14 +66,13 @@ BEGIN_EVENT_TABLE(ASSDrawShapeLibrary, wxScrolledWindow)
 	EVT_TOOL(TOOL_DELETE, ASSDrawShapeLibrary::DeleteChecked)
 END_EVENT_TABLE()
 
-ASSDrawShapeLibrary::ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame )
-	: wxScrolledWindow(parent, wxID_ANY)
+ASSDrawShapeLibrary::ASSDrawShapeLibrary(wxWindow *parent, ASSDrawFrame *frame) : wxScrolledWindow(parent, wxID_ANY)
 {
 	m_frame = frame;
 	//sizer = NULL;
 	layout = VERTICAL;
 
-	wxToolBar *tbar = new wxToolBar(this, wxID_ANY, __DPDS__ , wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
+	wxToolBar *tbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
 	tbar->SetMargins(0, 3);
 	tbar->AddTool(TOOL_SAVE, _T("Save canvas"), wxBITMAP(add));
 	tbar->AddSeparator();
@@ -82,7 +80,7 @@ ASSDrawShapeLibrary::ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame 
 	tbar->AddTool(TOOL_UNCHECK, _T("Select none"), wxBITMAP(uncheck));
 	tbar->AddTool(TOOL_DELETE, _T("Delete selected"), wxBITMAP(delcross));
 
-	libarea = new wxScrolledWindow(this, wxID_ANY, __DPDS__ , wxScrolledWindowStyle | wxSIMPLE_BORDER);
+	libarea = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxScrolledWindowStyle | wxSIMPLE_BORDER);
 	libarea->SetBackgroundColour(wxColour(0xFF, 0xFF, 0x99));
 	sizer = new wxFlexGridSizer(0, 1, 0, 0);
 	((wxFlexGridSizer*) sizer)->AddGrowableCol(0);
@@ -101,7 +99,8 @@ ASSDrawShapeLibrary::ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame 
 
 void ASSDrawShapeLibrary::OnSize(wxSizeEvent& WXUNUSED(event))
 {
-	if (sizer == NULL || sizer->GetChildren().size() == 0) return;
+	if (sizer == NULL || sizer->GetChildren().size() == 0)
+		return;
 
 	wxSize siz = GetClientSize();
 	libsizer->SetDimension(0, 0, siz.x, siz.y);
@@ -179,31 +178,31 @@ void ASSDrawShapeLibrary::OnPopupMenuClicked(wxCommandEvent &event)
 	int id = event.GetId();
 	switch(id)
 	{
-	case MENU_LOAD:
-		LoadToCanvas(activepreview);
-		break;
-	case MENU_COPYCLIPBOARD:
-		if (wxTheClipboard->Open())
-		{
-			if (wxTheClipboard->IsSupported( wxDF_TEXT ))
+		case MENU_LOAD:
+			LoadToCanvas(activepreview);
+			break;
+		case MENU_COPYCLIPBOARD:
+			if (wxTheClipboard->Open())
 			{
-				wxTheClipboard->SetData( new wxTextDataObject( activepreview->GenerateASS() ) );
+				if (wxTheClipboard->IsSupported(wxDF_TEXT))
+				{
+					wxTheClipboard->SetData(new wxTextDataObject(activepreview->GenerateASS()));
+				}
+				wxTheClipboard->Close();
 			}
-			wxTheClipboard->Close();
-		}
-		break;
-	case MENU_SAVECANVAS:
-		activepreview->ParseASS(m_frame->m_canvas->GenerateASS());
-		activepreview->SetFitToViewPointOnNextPaint();
-		activepreview->RefreshDisplay();
-		break;
-	case MENU_DELETE:
-		sizer->Detach(activepreview);
-		activepreview->Show(false);
-		activepreview->Destroy();
-		UpdatePreviewDisplays();
-		Refresh();
-		break;
+			break;
+		case MENU_SAVECANVAS:
+			activepreview->ParseASS(m_frame->m_canvas->GenerateASS());
+			activepreview->SetFitToViewPointOnNextPaint();
+			activepreview->RefreshDisplay();
+			break;
+		case MENU_DELETE:
+			sizer->Detach(activepreview);
+			activepreview->Show(false);
+			activepreview->Destroy();
+			UpdatePreviewDisplays();
+			Refresh();
+			break;
 	}
 }
 

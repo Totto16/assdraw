@@ -70,7 +70,6 @@ struct UndoRedo
 
 	void Import(ASSDrawCanvas *canvas, bool prestage, wxString cmds = _T(""));
 	void Export(ASSDrawCanvas *canvas);
-
 };
 
 // for multiple point selection
@@ -79,24 +78,24 @@ enum SELECTMODE { NEW, ADD, DEL };
 class ASSDrawCanvas: public ASSDrawEngine, public wxClientData
 {
 public:
-	ASSDrawCanvas( wxWindow *parent, ASSDrawFrame *frame, int extraflags = 0 );
+	ASSDrawCanvas(wxWindow *parent, ASSDrawFrame *frame, int extraflags = 0);
 
 	// destructor
 	~ASSDrawCanvas();
 
 	virtual void ResetEngine(bool addM);
-	virtual void SetPreviewMode( bool mode );
+	virtual void SetPreviewMode(bool mode);
 	virtual bool IsPreviewMode() { return preview_mode; }
 	virtual void ParseASS(wxString str, bool addundo = false);
 
-	virtual void SetDrawMode( MODE mode );
+	virtual void SetDrawMode(MODE mode);
 	virtual MODE GetDrawMode() { return draw_mode; }
-	virtual bool IsTransformMode();
-	virtual void SetDragMode( DRAGMODE mode );
+	virtual bool IsTransformMode() { return draw_mode == MODE_NUT_BILINEAR || draw_mode == MODE_SCALEROTATE; }
+	virtual void SetDragMode(DRAGMODE mode) { drag_mode = mode; }
 	virtual DRAGMODE GetDragMode() { return drag_mode; }
 	virtual void RefreshDisplay();
-	virtual bool CanZoom();
-	virtual bool CanMove();
+	virtual bool CanZoom() { return !IsTransformMode() || !drag_mode.drawing; }
+	virtual bool CanMove() { return !IsTransformMode() || dragAnchor_left == NULL; }
 
 	virtual void OnMouseMove(wxMouseEvent &event);
 	virtual void OnMouseLeftUp(wxMouseEvent &event);
@@ -108,11 +107,11 @@ public:
 	virtual void CustomOnKeyDown(wxKeyEvent &event);
 	virtual void CustomOnKeyUp(wxKeyEvent &event);
 	virtual void ChangeZoomLevel(double zoomamount, wxPoint bgzoomctr);
-	virtual void ChangeZoomLevelTo(double zoom, wxPoint bgzoomctr);
+	virtual void ChangeZoomLevelTo(double zoom, wxPoint bgzoomctr) { ChangeZoomLevel(zoom - pointsys->scale, bgzoomctr); }
 	virtual void ChangeDrawingZoomLevel(double zoom);
 	virtual void ChangeBackgroundZoomLevel(double zoom, wxRealPoint newcenter);
 	virtual void MoveCanvas(double xamount, double yamount);
-	virtual void MoveCanvasOriginTo(double originx, double originy);
+	virtual void MoveCanvasOriginTo(double originx, double originy) { MoveCanvas(originx - pointsys->originx, originy - pointsys->originy); }
 	virtual void MoveCanvasDrawing(double xamount, double yamount);
 	virtual void MoveCanvasBackground(double xamount, double yamount);
 	virtual void OnSelect_ConvertLineToBezier(wxCommandEvent& WXUNUSED(event));
@@ -127,13 +126,13 @@ public:
 	double GetOriginY() { return pointsys->originy; }
 
 	// undo/redo system
-	virtual void AddUndo( wxString desc );
+	virtual void AddUndo(wxString desc);
 	virtual bool UndoOrRedo(bool isundo);
-	virtual bool Undo();
-	virtual bool Redo();
+	virtual bool Undo() { return UndoOrRedo(true); }
+	virtual bool Redo() { return UndoOrRedo(false); }
 	virtual wxString GetTopUndo();
 	virtual wxString GetTopRedo();
-	virtual void RefreshUndocmds();
+	virtual void RefreshUndocmds() { _undo.Import(this, true, GenerateASS()); }
 
 	virtual bool HasBackgroundImage() { return bgimg.bgimg != NULL; }
 	virtual void RemoveBackgroundImage();
@@ -243,10 +242,10 @@ protected:
 	// -------------------- points highlight/selection ---------------------------
 
 	// set command and point to highlight
-	virtual void SetHighlighted ( DrawCmd* cmd, Point* point );
+	virtual void SetHighlighted(DrawCmd* cmd, Point* point);
 
 	// selects all points within (lx, ty) , (rx, by) returns # of selected points
-	virtual int SelectPointsWithin( int lx, int rx, int ty, int by, SELECTMODE smode = NEW );
+	virtual int SelectPointsWithin(int lx, int rx, int ty, int by, SELECTMODE smode = NEW);
 	virtual void ClearPointsSelection();
 	virtual SELECTMODE GetSelectMode(wxMouseEvent &event);
 
@@ -263,16 +262,16 @@ protected:
 	bool isshapetransformable;
 
 	// do the real drawing
-	virtual void DoDraw( RendererBase& rbase, RendererPrimitives& rprim, RendererSolid& rsolid, agg::trans_affine& mtx );
+	virtual void DoDraw(RendererBase& rbase, RendererPrimitives& rprim, RendererSolid& rsolid, agg::trans_affine& mtx);
 
 	// update background image scale & position
 	virtual void UpdateBackgroundImgScalePosition(bool firsttime = false);
 
 	// perform extra stuff other than calling ASSDrawEngine::ConnectSubsequentCmds
-	virtual void ConnectSubsequentCmds (DrawCmd* cmd1, DrawCmd* cmd2);
+	virtual void ConnectSubsequentCmds(DrawCmd* cmd1, DrawCmd* cmd2);
 
 	// make sure the c1 continuity is followed after performing a drag-point action
-	virtual void EnforceC1Continuity (DrawCmd* cmd, Point* pnt);
+	virtual void EnforceC1Continuity(DrawCmd* cmd, Point* pnt);
 
 	// after the bounding quadrangle has changed, update the shape to fill up inside it
 	virtual void UpdateNonUniformTransformation();

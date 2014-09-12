@@ -69,14 +69,14 @@ private:
 
 };
 
-DECLARE_EVENT_TYPE( wxEVT_MOUSEONCANVAS, -1 )
+DECLARE_EVENT_TYPE(wxEVT_MOUSEONCANVAS, -1)
 
 typedef void (wxEvtHandler::*wxMouseOnCanvasEventFunction)(ASSDrawMouseOnCanvasEvent&);
 
 #define EVT_MOUSEONCANVAS(fn) \
-	DECLARE_EVENT_TABLE_ENTRY( wxEVT_MOUSEONCANVAS, -1, -1, \
+	DECLARE_EVENT_TABLE_ENTRY(wxEVT_MOUSEONCANVAS, -1, -1, \
 	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-	wxStaticCastEvent( wxMouseOnCanvasEventFunction, & fn ), (wxObject *) NULL ),
+	wxStaticCastEvent(wxMouseOnCanvasEventFunction, &fn), (wxObject *) NULL),
 
 class ASSDrawMouseOnCanvasHandler
 {
