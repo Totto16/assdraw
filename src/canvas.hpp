@@ -44,10 +44,10 @@
 #include <wx/splitter.h>
 #include <wx/clntdata.h>
 
-#include "agg_span_allocator.h"
-#include "agg_span_interpolator_linear.h"
-#include "agg_span_image_filter_rgb.h"
-#include "agg_span_image_filter_rgba.h"
+#include <agg_span_allocator.h>
+#include <agg_span_interpolator_linear.h>
+#include <agg_span_image_filter_rgb.h>
+#include <agg_span_image_filter_rgba.h>
 
 class ASSDrawFrame;
 class ASSDrawCanvas;

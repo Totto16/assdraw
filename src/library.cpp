@@ -25,8 +25,9 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "assdraw.hpp"
 #include "library.hpp"
+#include "assdraw.hpp"
+#include "canvas.hpp"
 
 #include <wx/clipbrd.h>
 

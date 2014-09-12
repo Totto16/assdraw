@@ -27,7 +27,6 @@ assdraw_SOURCES += \
 	agg_vcgen_bcspline.h
 
 EXTRA_DIST = \
-	_common.hpp \
 	assdraw.hpp \
 	canvas.hpp \
 	canvas_mouse.hpp \

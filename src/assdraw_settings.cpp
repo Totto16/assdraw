@@ -26,6 +26,8 @@
 */
 
 #include "assdraw.hpp"
+#include "canvas.hpp"
+#include "library.hpp"
 
 void ASSDrawFrame::InitializeDefaultSettings()
 {

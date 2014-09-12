@@ -33,8 +33,8 @@
 // Licence:     3-clause BSD
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "assdraw.hpp"
 #include "settings.hpp"
+#include "assdraw.hpp"
 
 DEFINE_EVENT_TYPE(wxEVT_SETTINGS_CHANGED)
 

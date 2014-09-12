@@ -40,8 +40,8 @@
 
 #include <wx/tokenzr.h> // we use string tokenizer
 
-#include "agg_conv_bcspline.h"
-#include "agg_array.h"
+#include "agg_conv_bcspline.h" //this header is local to our project
+#include <agg_array.h>
 
 // ----------------------------------------------------------------------------
 // Point

@@ -27,7 +27,7 @@
 
 #pragma once
 
-#include "_common.hpp"
+#include "wx.hpp"
 #include <wx/html/htmlwin.h>
 #include <wx/timer.h>
 

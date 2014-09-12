@@ -34,6 +34,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "assdraw.hpp"
+#include "canvas.hpp" // the canvas
+#include "dlgctrl.hpp" // custom dialogs & controls
+#include "library.hpp" // shape library
+#include "settings.hpp" // settings property grid
+
 #include "enums.hpp"
 #include "include_once.hpp"
 
@@ -102,9 +107,9 @@ END_EVENT_TABLE()
 // 'Main program' equivalent: the program execution _T("starts") here
 bool ASSDrawApp::OnInit()
 {
-	SetAppName(TITLE);
+	SetAppName(_T("ASSDraw3"));
 	// create the main application window
-	ASSDrawFrame * assdrawframe = new ASSDrawFrame(this, TITLE, wxDefaultPosition, wxSize(640, 480));
+	ASSDrawFrame * assdrawframe = new ASSDrawFrame(this, _T("ASSDraw3"), wxDefaultPosition, wxSize(640, 480));
 	SetTopWindow(assdrawframe);
 	return TRUE;
 }
@@ -479,6 +484,15 @@ void ASSDrawFrame::_Paste()
 		}
 		wxTheClipboard->Close();
 	}
+}
+
+void ASSDrawFrame::OnSelect_RemoveBG(wxCommandEvent& WXUNUSED(event))
+{
+	m_canvas->RemoveBackgroundImage();
+}
+void ASSDrawFrame::OnSelect_AlphaBG(wxCommandEvent& WXUNUSED(event))
+{
+	m_canvas->AskUserForBackgroundAlpha();
 }
 
 void ASSDrawFrame::OnChoose_Recenter(wxCommandEvent& event)

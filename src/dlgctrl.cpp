@@ -33,6 +33,7 @@
 // Licence:     3-clause BSD
 ///////////////////////////////////////////////////////////////////////////////
 
+#include "dlgctrl.hpp"
 #include "assdraw.hpp"
 
 #if !defined(__WINDOWS__)
@@ -210,7 +211,7 @@ void ASSDrawTransformDlg::EndModal(int retCode)
 // ASSDrawAboutDlg
 // ----------------------------------------------------------------------------
 
-ASSDrawAboutDlg::ASSDrawAboutDlg(ASSDrawFrame *parent, unsigned timeout) : wxDialog(parent, wxID_ANY, TITLE, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER), time_out(timeout)
+ASSDrawAboutDlg::ASSDrawAboutDlg(ASSDrawFrame *parent, unsigned timeout) : wxDialog(parent, wxID_ANY, _T("ASSDraw3"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER), time_out(timeout)
 {
 	SetBackgroundColour(*wxWHITE);
 	htmlwin = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(396, 200), wxHW_DEFAULT_STYLE | wxSIMPLE_BORDER);

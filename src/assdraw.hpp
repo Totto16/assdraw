@@ -26,9 +26,7 @@
 */
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        assdraw.hpp
-// Purpose:     header file for ASSDraw main source file; also includes
-//              declarations for all GUI elements (except wxRuler, which has
-//              its own header file)
+// Purpose:     header file for ASSDraw main source file
 // Author:      ai-chan
 // Created:     08/26/06
 // Copyright:   (c) ai-chan
@@ -39,20 +37,30 @@
 
 #include <vector>
 
-#include "_common.hpp"
-#include <wx/wxprec.h>
+#include "wx.hpp"
 #include <wx/aui/aui.h>
 #include <wx/fileconf.h>
 #include <wx/help.h>
 
-#include "canvas.hpp" // the canvas
-#include "dlgctrl.hpp" // custom dialogs & controls
-#include "settings.hpp" // settings property grid
-#include "library.hpp" // shape library
+#include <agg_color_rgba.h>
 
 #ifndef VERSION
+// this is used by assdraw.cpp and dlgctrl.cpp
+// ifndef is there because cmake sets this to git repo version (and VSC++ doesn't)
 #define VERSION _T("3.0 final")
 #endif
+
+// every other header includes this class >_>
+class ASSDrawEngine;
+// defined in canvas.hpp
+class ASSDrawCanvas;
+// defined in dlgctrl.hpp
+class ASSDrawSrcTxtCtrl;
+class ASSDrawTransformDlg;
+// defined in settings.hpp
+class ASSDrawSettingsDialog;
+// defined in library.hpp
+class ASSDrawShapeLibrary;
 
 class ASSDrawApp : public wxApp
 {
@@ -80,8 +88,8 @@ public:
 	void OnSelect_Undo(wxCommandEvent& WXUNUSED(event)) { UndoOrRedo(true); }
 	void OnSelect_Redo(wxCommandEvent& WXUNUSED(event)) { UndoOrRedo(false); }
 	void OnSelect_Paste(wxCommandEvent& WXUNUSED(event)) { _Paste(); }
-	void OnSelect_RemoveBG(wxCommandEvent& WXUNUSED(event)) { m_canvas->RemoveBackgroundImage(); }
-	void OnSelect_AlphaBG(wxCommandEvent& WXUNUSED(event)) { m_canvas->AskUserForBackgroundAlpha(); }
+	void OnSelect_RemoveBG(wxCommandEvent& WXUNUSED(event));
+	void OnSelect_AlphaBG(wxCommandEvent& WXUNUSED(event));
 	void OnChoose_Recenter(wxCommandEvent& event);
 	void OnChoose_RecenterToBG(wxCommandEvent& event);
 	void OnChoose_Mode(wxCommandEvent& event);

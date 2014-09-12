@@ -16,7 +16,6 @@
     <ClInclude Include="src\agg_vcgen_bcspline.h" />
     <ClInclude Include="src\wxAGG\AGGWindow.h" />
     <ClInclude Include="src\wxAGG\PixelFormatConvertor.h" />
-    <ClInclude Include="src\_common.hpp" />
     <ClInclude Include="src\assdraw.hpp" />
     <ClInclude Include="src\canvas.hpp" />
     <ClInclude Include="src\canvas_mouse.hpp" />

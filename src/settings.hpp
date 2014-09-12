@@ -27,7 +27,7 @@
 
 #pragma once
 
-#include "_common.hpp"
+#include "wx.hpp"
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/advprops.h>
 

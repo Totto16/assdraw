@@ -27,11 +27,12 @@
 
 #pragma once
 
-#include "_common.hpp"
+#include "wx.hpp"
 #include <wx/event.h>
 
 #include "enums.hpp"
-#include "engine.hpp"
+
+class Point;
 
 struct MouseOnCanvasData
 {

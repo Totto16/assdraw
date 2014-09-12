@@ -35,16 +35,18 @@
 
 #include <math.h>
 
+#include "canvas.hpp"
 #include "assdraw.hpp"
 
 #include <wx/image.h>
 #include <wx/filename.h>
 
-#include "agg_math.h"
-#include "agg_gsv_text.h"
-#include "agg_ellipse.h"
-#include "agg_conv_clip_polygon.h"
-#include "agg_trans_bilinear.h"
+#include <agg_math.h>
+#include <agg_gsv_text.h>
+#include <agg_ellipse.h>
+#include <agg_conv_clip_polygon.h>
+#include <agg_trans_bilinear.h>
+
 
 // ----------------------------------------------------------------------------
 // the main drawing canvas: ASSDrawCanvas
