@@ -667,72 +667,77 @@ void ASSDrawEngine::AddDrawCmdToAGGPathStorage(DrawCmd* cmd, agg::path_storage& 
 
 	switch(cmd->type)
 	{
-	case M:
-		path.move_to(cmd->m_point->x(),cmd->m_point->y());
-		break;
-
-	case L:
-		if (mode == CTRL_LN)
-			path.move_to(cmd->m_point->x(),cmd->m_point->y());
-		else
-			path.line_to(cmd->m_point->x(),cmd->m_point->y());
-		break;
-
-	case B:
-		if (cmd->initialized)
+		case M:
 		{
-			//path.move_to(cmd->prev->m_point->x(),cmd->prev->m_point->y());
-			PointList::iterator iterate = cmd->controlpoints.begin();
-			int x[2], y[2];
-			x[0] = (*iterate)->x();
-			y[0] = (*iterate)->y();
-			iterate++;
-			x[1] = (*iterate)->x();
-			y[1] = (*iterate)->y();
-			path.curve4(x[0], y[0], x[1], y[1], cmd->m_point->x(),cmd->m_point->y());
+			path.move_to(cmd->m_point->x(),cmd->m_point->y());
 			break;
 		}
-
-	case S:
-		unsigned np = cmd->controlpoints.size();
-		agg::pod_array<double> m_polygon(np * 2);
-		unsigned _pn = 0;
-		PointList::iterator iterate = cmd->controlpoints.begin();
-		while (iterate != cmd->controlpoints.end())
+		case L:
 		{
-			m_polygon[_pn] = (*iterate)->x();
-			_pn++;
-			m_polygon[_pn] = (*iterate)->y();
-			_pn++;
-			iterate++;
+			if (mode == CTRL_LN)
+				path.move_to(cmd->m_point->x(),cmd->m_point->y());
+			else
+				path.line_to(cmd->m_point->x(),cmd->m_point->y());
+			break;
 		}
-		//m_polygon[_pn++] = cmd->m_point->x();
-		//m_polygon[_pn++] = cmd->m_point->y();
-		//path.move_to(cmd->prev->m_point->x(),cmd->prev->m_point->y());
-		if (mode == CTRL_LN)
+		case B:
 		{
-			_pn = 0;
-			while (_pn < np * 2)
+			if (cmd->initialized)
 			{
-				path.line_to((int) m_polygon[_pn],(int) m_polygon[_pn + 1]);
-				_pn += 2;
+				//path.move_to(cmd->prev->m_point->x(),cmd->prev->m_point->y());
+				PointList::iterator iterate = cmd->controlpoints.begin();
+				int x[2], y[2];
+				x[0] = (*iterate)->x();
+				y[0] = (*iterate)->y();
+				iterate++;
+				x[1] = (*iterate)->x();
+				y[1] = (*iterate)->y();
+				path.curve4(x[0], y[0], x[1], y[1], cmd->m_point->x(),cmd->m_point->y());
 			}
-			path.line_to(cmd->m_point->x(), cmd->m_point->y());
+			break;
 		}
-		else
+		case S:
 		{
-			//path.line_to((int) m_polygon[0],(int) m_polygon[1]);
-			aggpolygon poly(&m_polygon[0], np, false, false);
-			agg::conv_bcspline<agg::simple_polygon_vertex_source>  bspline(poly);
-			bspline.interpolation_step(0.01);
-			agg::path_storage npath;
-			npath.join_path(bspline);
-			path.join_path(npath);
-			if (mode == HILITE)
-				path.move_to((int) m_polygon[np * 2 - 2], (int) m_polygon[np * 2 - 1]);
-			path.line_to(cmd->m_point->x(), cmd->m_point->y());
+			unsigned np = cmd->controlpoints.size();
+			agg::pod_array<double> m_polygon(np * 2);
+			unsigned _pn = 0;
+			PointList::iterator iterate = cmd->controlpoints.begin();
+			while (iterate != cmd->controlpoints.end())
+			{
+				m_polygon[_pn] = (*iterate)->x();
+				_pn++;
+				m_polygon[_pn] = (*iterate)->y();
+				_pn++;
+				iterate++;
+			}
+			//m_polygon[_pn++] = cmd->m_point->x();
+			//m_polygon[_pn++] = cmd->m_point->y();
+			//path.move_to(cmd->prev->m_point->x(),cmd->prev->m_point->y());
+			if (mode == CTRL_LN)
+			{
+				_pn = 0;
+				while (_pn < np * 2)
+				{
+					path.line_to((int) m_polygon[_pn],(int) m_polygon[_pn + 1]);
+					_pn += 2;
+				}
+				path.line_to(cmd->m_point->x(), cmd->m_point->y());
+			}
+			else
+			{
+				//path.line_to((int) m_polygon[0],(int) m_polygon[1]);
+				aggpolygon poly(&m_polygon[0], np, false, false);
+				agg::conv_bcspline<agg::simple_polygon_vertex_source>  bspline(poly);
+				bspline.interpolation_step(0.01);
+				agg::path_storage npath;
+				npath.join_path(bspline);
+				path.join_path(npath);
+				if (mode == HILITE)
+					path.move_to((int) m_polygon[np * 2 - 2], (int) m_polygon[np * 2 - 1]);
+				path.line_to(cmd->m_point->x(), cmd->m_point->y());
+			}
+			break;
 		}
-		break;
 	}
 }
 
