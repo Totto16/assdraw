@@ -584,6 +584,9 @@ void ASSDrawEngine::ConnectSubsequentCmds(DrawCmd* cmd1, DrawCmd* cmd2)
 
 void ASSDrawEngine::RefreshDisplay()
 {
+#ifndef __WINDOWS__
+	paint();
+#endif
 	if (!refresh_called)
 	{
 		Refresh();
@@ -593,7 +596,9 @@ void ASSDrawEngine::RefreshDisplay()
 
 void ASSDrawEngine::OnPaint(wxPaintEvent& event)
 {
+#ifdef __WINDOWS__
 	draw();
+#endif
 	onPaint(event);
 	if (setfitviewpoint)
 	{
