@@ -137,7 +137,11 @@ ASSDrawFrame::ASSDrawFrame(wxApp *app, const wxString& title, const wxPoint& pos
 
    	// Create status bar for the frame
 	CreateStatusBar(3);
-	int statwidths[] = { 64, -1, 64 };
+#ifdef __WINDOWS__
+	int statwidths[] = { 64, -1, 34 };
+#else
+	int statwidths[] = { 92, -1, 64 };
+#endif
 	GetStatusBar()->SetStatusWidths(3, statwidths);
 	SetStatusBarPane(1);
 
@@ -234,8 +238,7 @@ void ASSDrawFrame::SetToolBars()
 	//tbar->AddTool(TB_EDITSRC, _T("Source"), wxBITMAP(src_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_EDITSRC);
 	drawtbar->AddCheckTool(TB_PREVIEW, _T("Preview"), wxBITMAP(preview_), wxNullBitmap, _T(""), TIPS_PREVIEW);
 	//drawtbar->AddTool(TB_TRANSFORM, _T("Transform"), wxBITMAP(rot_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_TRANSFORM);
-	zoomslider = new wxSlider(drawtbar, TB_ZOOMSLIDER, 1000, 100, 5000, wxDefaultPosition, wxDefaultSize);
-	//zoomslider->SetSize(280, zoomslider->GetSize().y);
+	zoomslider = new wxSlider(drawtbar, TB_ZOOMSLIDER, 1000, 100, 5000, wxDefaultPosition, wxSize(100,-1));
 	zoomslider->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ASSDrawFrame::OnZoomSliderChanged), NULL, this);
 	zoomslider->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ASSDrawFrame::OnZoomSliderChanged), NULL, this);
 	zoomslider->Connect(wxEVT_SCROLL_PAGEUP, wxScrollEventHandler(ASSDrawFrame::OnZoomSliderChanged), NULL, this);

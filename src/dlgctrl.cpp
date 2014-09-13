@@ -255,7 +255,7 @@ Control points for Bezier curves are generated once you release the mouse button
 	sizer->Add(new wxButton(this, wxID_OK), 0, wxALIGN_CENTRE_HORIZONTAL| wxBOTTOM | wxALL, 10);
 	SetSizerAndFit(sizer);
 
-	Center();
+	CentreOnScreen();
 
 	timer.SetOwner(this);
 	Connect(wxEVT_TIMER, wxTimerEventHandler(ASSDrawAboutDlg::OnTimeout));
