@@ -639,7 +639,7 @@ void ASSDrawEngine::ConstructPathsAndCurves(agg::trans_affine& mtx, ConvTransAff
 	}
 	_rm_path = new ConvTransAffine(m_path, mtx);
 	_rb_path = new ConvTransAffine(b_path, mtx);
-	_rm_curve = new ConvCurveTransAffine(*rm_path);
+	_rm_curve = new ConvCurveTransAffine(*_rm_path);
 }
 
 void ASSDrawEngine::DoDraw(RendererBase& rbase, RendererPrimitives& rprim, RendererSolid& rsolid, agg::trans_affine& mtx)
