@@ -18,7 +18,7 @@
 //#include "pan_both_xpm.xpm"
 #include "pan_shp_xpm.xpm"
 #include "preview__xpm.xpm"
-//#include "rot__xpm.xpm"
+#include "rot__xpm.xpm"
 //#include "s__xpm.xpm"
 #include "sc_rot__xpm.xpm"
 //#include "src__xpm.xpm"

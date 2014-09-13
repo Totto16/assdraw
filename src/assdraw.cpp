@@ -237,7 +237,7 @@ void ASSDrawFrame::SetToolBars()
 	drawtbar->AddTool(TB_CLEAR, _T("Clear"), wxBITMAP(new_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_CLEAR);
 	//tbar->AddTool(TB_EDITSRC, _T("Source"), wxBITMAP(src_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_EDITSRC);
 	drawtbar->AddCheckTool(TB_PREVIEW, _T("Preview"), wxBITMAP(preview_), wxNullBitmap, _T(""), TIPS_PREVIEW);
-	//drawtbar->AddTool(TB_TRANSFORM, _T("Transform"), wxBITMAP(rot_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_TRANSFORM);
+	drawtbar->AddTool(TB_TRANSFORM, _T("Transform"), wxBITMAP(rot_), wxNullBitmap, wxITEM_NORMAL, _T(""), TIPS_TRANSFORM);
 	zoomslider = new wxSlider(drawtbar, TB_ZOOMSLIDER, 1000, 100, 5000, wxDefaultPosition, wxSize(100,-1));
 	zoomslider->Connect(wxEVT_SCROLL_LINEUP, wxScrollEventHandler(ASSDrawFrame::OnZoomSliderChanged), NULL, this);
 	zoomslider->Connect(wxEVT_SCROLL_LINEDOWN, wxScrollEventHandler(ASSDrawFrame::OnZoomSliderChanged), NULL, this);

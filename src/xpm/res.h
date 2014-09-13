@@ -17,7 +17,7 @@ extern char *pan_bg_xpm[];
 //extern char *pan_both_xpm[];
 extern char *pan_shp_xpm[];
 extern char *preview__xpm[];
-//extern char *rot__xpm[];
+extern char *rot__xpm[];
 //extern char *s__xpm[];
 extern char *sc_rot__xpm[];
 //extern char *src__xpm[];
